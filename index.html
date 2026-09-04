@@ -396,6 +396,146 @@
             margin-bottom: 0.75rem !important;
         }
 
+        .proj-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.65rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: rgba(255,180,0,0.85);
+            border: 1px solid rgba(255,180,0,0.3);
+            background: rgba(255,180,0,0.06);
+            border-radius: 20px;
+            padding: 0.4rem 0.8rem;
+        }
+
+        .proj-badge::before {
+            content: "\f023";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            font-size: 0.7rem;
+        }
+
+        .proj-card {
+            cursor: pointer;
+        }
+
+        .proj-expand-hint {
+            display: block;
+            margin-top: 0.9rem;
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
+            color: rgba(255,255,255,0.35);
+            opacity: 0;
+            transform: translateY(4px);
+            transition: var(--transition);
+        }
+
+        .proj-card[data-state="center"]:hover .proj-expand-hint {
+            opacity: 1;
+            transform: translateY(0);
+            color: var(--primary-gold);
+        }
+
+        /* Project Modal */
+        .proj-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .proj-modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .proj-modal {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,180,0,0.25);
+            border-radius: 18px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 88vh;
+            overflow-y: auto;
+            position: relative;
+            transform: scale(0.92) translateY(10px);
+            transition: transform 0.35s cubic-bezier(0.4, 2, 0.3, 1);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+        }
+
+        .proj-modal-overlay.active .proj-modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .proj-modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            font-size: 1.6rem;
+            line-height: 1;
+            cursor: pointer;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .proj-modal-close:hover {
+            background: var(--primary-gold);
+            color: black;
+        }
+
+        .proj-modal-img {
+            width: 100%;
+            height: 380px;
+            background-size: cover;
+            background-position: top center;
+            border-radius: 18px 18px 0 0;
+            background-color: #1a1a1a;
+        }
+
+        .proj-modal-body {
+            padding: 2rem 2.25rem 2.25rem;
+        }
+
+        .proj-modal-body h3 {
+            color: var(--primary-gold);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .proj-modal-body p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: rgba(255,255,255,0.85);
+            margin-bottom: 1.25rem;
+        }
+
+        .proj-modal-body #modalAction {
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .proj-modal-img { height: 220px; }
+            .proj-modal-body { padding: 1.5rem; }
+        }
+
         /* Card states */
         .proj-card[data-state="center"] {
             transform: translateX(0) translateY(0) scale(1) rotateY(0deg);
@@ -676,33 +816,107 @@
         <div class="carousel-wrapper">
             <div class="carousel-stage" id="carouselStage">
 
-                <div class="proj-card" data-index="0">
-                    <div class="proj-img" style="background-image: url('betbot-preview.png');"></div>
-                    <div class="proj-body">
-                        <h3>BetBot</h3>
-                        <p>Automação inteligente para análise e execução de estratégias em apostas esportivas. Focado na otimização da gestão de banca e análise de dados em tempo real.</p>
-                        <p class="proj-tags">Python • APIs REST • Automação • Processamento de Dados</p>
-                        <a href="https://github.com/felipefer18/Botbet.git" class="btn-explorer" style="font-size: 0.7rem; padding: 0.5rem 1rem;" target="_blank">VER NO GITHUB</a>
-                    </div>
-                </div>
-
-                <div class="proj-card" data-index="1">
+                <div class="proj-card" data-index="0"
+                    data-img="pe-confortavel-preview.png"
+                    data-title="Pé Confortável (E-commerce)"
+                    data-desc="Plataforma completa de e-commerce e gestão. Inclui painel administrativo para controle de inventário, gestão de fornecedores e dashboard interativo para análise de vendas e lucros."
+                    data-tags="Python • Django • Banco de Dados • HTML/CSS"
+                    data-link="https://github.com/felipefer18/peconfortavel"
+                    data-link-label="VER NO GITHUB"
+                    onclick="openProjectModal(this)">
                     <div class="proj-img" style="background-image: url('pe-confortavel-preview.png');"></div>
                     <div class="proj-body">
                         <h3>Pé Confortável (E-commerce)</h3>
                         <p>Plataforma completa de e-commerce e gestão. Inclui painel administrativo para controle de inventário, gestão de fornecedores e dashboard interativo para análise de vendas e lucros.</p>
                         <p class="proj-tags">Python • Django • Banco de Dados • HTML/CSS</p>
-                        <a href="https://github.com/felipefer18/peconfortavel" class="btn-explorer" style="font-size: 0.7rem; padding: 0.5rem 1rem;" target="_blank">VER NO GITHUB</a>
+                        <a href="https://github.com/felipefer18/peconfortavel" class="btn-explorer" style="font-size: 0.7rem; padding: 0.5rem 1rem;" target="_blank" onclick="event.stopPropagation()">VER NO GITHUB</a>
+                        <span class="proj-expand-hint"><i class="fas fa-expand"></i> Clique para ampliar</span>
                     </div>
                 </div>
 
-                <div class="proj-card" data-index="2">
+                <div class="proj-card" data-index="1"
+                    data-img="slides-automation-preview.png"
+                    data-title="Automatização de Slides"
+                    data-desc="Ferramenta de automação em Python para simplificar a criação de apresentações. Transforma diretórios de imagens e PDFs em slides de PowerPoint formatados, seguindo um template pré-definido."
+                    data-tags="Python • Automação • Gerenciamento de Arquivos • Integração Office"
+                    data-link="https://github.com/felipefer18/Automatiza-o-Slides"
+                    data-link-label="VER NO GITHUB"
+                    onclick="openProjectModal(this)">
                     <div class="proj-img" style="background-image: url('slides-automation-preview.png');"></div>
                     <div class="proj-body">
                         <h3>Automatização de Slides</h3>
                         <p>Ferramenta de automação em Python para simplificar a criação de apresentações. Transforma diretórios de imagens e PDFs em slides de PowerPoint formatados, seguindo um template pré-definido.</p>
                         <p class="proj-tags">Python • Automação • Gerenciamento de Arquivos • Integração Office</p>
-                        <a href="https://github.com/felipefer18/Automatiza-o-Slides" class="btn-explorer" style="font-size: 0.7rem; padding: 0.5rem 1rem;" target="_blank">VER NO GITHUB</a>
+                        <a href="https://github.com/felipefer18/Automatiza-o-Slides" class="btn-explorer" style="font-size: 0.7rem; padding: 0.5rem 1rem;" target="_blank" onclick="event.stopPropagation()">VER NO GITHUB</a>
+                        <span class="proj-expand-hint"><i class="fas fa-expand"></i> Clique para ampliar</span>
+                    </div>
+                </div>
+
+                <div class="proj-card" data-index="2"
+                    data-img="tempos-movimentos-preview.png"
+                    data-title="Plataforma Tempos e Movimentos"
+                    data-desc="A plataforma processa o orçamento aprovado do evento em planilha, identifica cada item, classifica a Ação (Montagem ou Chegada) e preenche a planilha oficial de Tempos e Movimentos com outro template."
+                    data-tags="Next.js + React • Python + FastAPI • PostgreSQL • Vercel"
+                    data-badge="Projeto Interno"
+                    onclick="openProjectModal(this)">
+                    <div class="proj-img" style="background-image: url('tempos-movimentos-preview.png');"></div>
+                    <div class="proj-body">
+                        <h3>Plataforma Tempos e Movimentos</h3>
+                        <p>A plataforma processa o orçamento aprovado do evento em planilha, identifica cada item, classifica a Ação (Montagem ou Chegada) e preenche a planilha oficial de Tempos e Movimentos com outro template.</p>
+                        <p class="proj-tags">Next.js + React • Python + FastAPI • PostgreSQL • Vercel</p>
+                        <span class="proj-badge">Projeto Interno</span>
+                        <span class="proj-expand-hint"><i class="fas fa-expand"></i> Clique para ampliar</span>
+                    </div>
+                </div>
+
+                <div class="proj-card" data-index="3"
+                    data-img="mapeamento-dores-preview.png"
+                    data-title="Mapeamento de Dores"
+                    data-desc="Plataforma de registro de dores manuais ou longas de processos internos, voltada à construção de automações e à melhoria dos processos internos da empresa, atacando as tarefas mais manuais."
+                    data-tags="React • TypeScript • Tailwind CSS • Vercel • Supabase • PostgreSQL"
+                    data-badge="Projeto Interno"
+                    onclick="openProjectModal(this)">
+                    <div class="proj-img" style="background-image: url('mapeamento-dores-preview.png');"></div>
+                    <div class="proj-body">
+                        <h3>Mapeamento de Dores</h3>
+                        <p>Plataforma de registro de dores manuais ou longas de processos internos, voltada à construção de automações e à melhoria dos processos internos da empresa, atacando as tarefas mais manuais.</p>
+                        <p class="proj-tags">React • TypeScript • Tailwind CSS • Vercel • Supabase • PostgreSQL</p>
+                        <span class="proj-badge">Projeto Interno</span>
+                        <span class="proj-expand-hint"><i class="fas fa-expand"></i> Clique para ampliar</span>
+                    </div>
+                </div>
+
+                <div class="proj-card" data-index="4"
+                    data-img="cda-platform-preview.png"
+                    data-title="Consulta CDA"
+                    data-desc="Plataforma feita para consulta de códigos utilizados pelo Banco do Brasil para comprovar itens do evento solicitado."
+                    data-tags="JavaScript • HTML/CSS/TypeScript • API/rotas server-side • Vercel"
+                    data-badge="Projeto Interno"
+                    onclick="openProjectModal(this)">
+                    <div class="proj-img" style="background-image: url('cda-platform-preview.png');"></div>
+                    <div class="proj-body">
+                        <h3>Consulta CDA</h3>
+                        <p>Plataforma feita para consulta de códigos utilizados pelo Banco do Brasil para comprovar itens do evento solicitado.</p>
+                        <p class="proj-tags">JavaScript • HTML/CSS/TypeScript • API/rotas server-side • Vercel</p>
+                        <span class="proj-badge">Projeto Interno</span>
+                        <span class="proj-expand-hint"><i class="fas fa-expand"></i> Clique para ampliar</span>
+                    </div>
+                </div>
+
+                <div class="proj-card" data-index="5"
+                    data-img="dependencias-bb-preview.png"
+                    data-title="Dependências BB"
+                    data-desc="Plataforma de busca de CNPJ de cada agência por município, bairro ou nome, das agências que atendem o Banco do Brasil."
+                    data-tags="JavaScript/TypeScript • React/Next.js • CSS • API • Vercel"
+                    data-badge="Projeto Interno"
+                    onclick="openProjectModal(this)">
+                    <div class="proj-img" style="background-image: url('dependencias-bb-preview.png');"></div>
+                    <div class="proj-body">
+                        <h3>Dependências BB</h3>
+                        <p>Plataforma de busca de CNPJ de cada agência por município, bairro ou nome, das agências que atendem o Banco do Brasil.</p>
+                        <p class="proj-tags">JavaScript/TypeScript • React/Next.js • CSS • API • Vercel</p>
+                        <span class="proj-badge">Projeto Interno</span>
+                        <span class="proj-expand-hint"><i class="fas fa-expand"></i> Clique para ampliar</span>
                     </div>
                 </div>
 
@@ -715,6 +929,20 @@
             </div>
         </div>
     </section>
+
+    <!-- Modal de Projeto -->
+    <div class="proj-modal-overlay" id="projModalOverlay" onclick="closeProjectModal(event)">
+        <div class="proj-modal" onclick="event.stopPropagation()">
+            <button class="proj-modal-close" onclick="closeProjectModal()" aria-label="Fechar">&times;</button>
+            <div class="proj-modal-img" id="modalImg"></div>
+            <div class="proj-modal-body">
+                <h3 id="modalTitle"></h3>
+                <p id="modalDesc"></p>
+                <p class="proj-tags" id="modalTags"></p>
+                <div id="modalAction"></div>
+            </div>
+        </div>
+    </div>
 
     <section id="contato">
         <div class="contact-card">
@@ -793,7 +1021,7 @@
         updateCarousel();
 
         // Autoplay
-        setInterval(carouselNext, 5000);
+        let autoplayTimer = setInterval(carouselNext, 5000);
 
         // Swipe support
         let touchStartX = 0;
@@ -803,6 +1031,50 @@
         document.getElementById('carouselStage').addEventListener('touchend', e => {
             const diff = touchStartX - e.changedTouches[0].clientX;
             if (Math.abs(diff) > 40) diff > 0 ? carouselNext() : carouselPrev();
+        });
+
+        // ── Modal de Projeto ───────────────────────────────────────────
+        const modalOverlay = document.getElementById('projModalOverlay');
+
+        function openProjectModal(cardEl) {
+            // Só abre se o card estiver centralizado (evita abrir os laterais)
+            if (cardEl.dataset.state !== 'center') return;
+
+            document.getElementById('modalImg').style.backgroundImage = `url('${cardEl.dataset.img}')`;
+            document.getElementById('modalTitle').textContent = cardEl.dataset.title;
+            document.getElementById('modalDesc').textContent = cardEl.dataset.desc;
+            document.getElementById('modalTags').textContent = cardEl.dataset.tags;
+
+            const actionEl = document.getElementById('modalAction');
+            actionEl.innerHTML = '';
+            if (cardEl.dataset.link) {
+                const a = document.createElement('a');
+                a.href = cardEl.dataset.link;
+                a.target = '_blank';
+                a.className = 'btn-explorer';
+                a.style.fontSize = '0.75rem';
+                a.style.padding = '0.7rem 1.4rem';
+                a.textContent = cardEl.dataset.linkLabel || 'VER PROJETO';
+                actionEl.appendChild(a);
+            } else if (cardEl.dataset.badge) {
+                const span = document.createElement('span');
+                span.className = 'proj-badge';
+                span.textContent = cardEl.dataset.badge;
+                actionEl.appendChild(span);
+            }
+
+            modalOverlay.classList.add('active');
+            clearInterval(autoplayTimer);
+        }
+
+        function closeProjectModal(e) {
+            if (e && e.target !== modalOverlay) return;
+            modalOverlay.classList.remove('active');
+            autoplayTimer = setInterval(carouselNext, 5000);
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeProjectModal();
         });
     </script>
 </body>
