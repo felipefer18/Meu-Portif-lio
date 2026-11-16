@@ -3,804 +3,782 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Felipe Fernandes | Portfólio</title>
+    <title>Felipe Fernandes | Automação & IA</title>
+    <meta name="description" content="Felipe Fernandes — desenvolvedor de IA & Automação. Agentes, LLMs (Claude, OpenAI), n8n e Python que transformam processos manuais em sistemas que rodam sozinhos.">
+    <meta property="og:title" content="Felipe Fernandes | Automação & IA">
+    <meta property="og:description" content="Agentes e automações que tiram trabalho repetitivo da operação.">
+    <meta property="og:type" content="website">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-gold: #ffb400;
-            --bg-black: #0a0a0a;
-            --card-bg: #161616;
-            --text-white: #ffffff;
+            --accent: #22d3ee;
+            --accent-2: #a78bfa;
+            --accent-rgb: 34, 211, 238;
+            --bg: #07090f;
+            --card-bg: #0f131c;
+            --line: rgba(255,255,255,0.09);
+            --text: #e8ecf4;
+            --muted: rgba(232,236,244,0.62);
             --whatsapp-green: #25D366;
+            --mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
             --transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--bg-black);
-            color: var(--text-white);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
             overflow-x: hidden;
         }
 
-        /* Background Video */
-        .video-container {
+        .mono { font-family: var(--mono); }
+
+        /* Fundo: rede de nós (canvas) */
+        #bg-canvas {
             position: fixed;
-            top: 0;
-            left: 0;
+            inset: 0;
             width: 100%;
             height: 100%;
+            z-index: -2;
+        }
+        .bg-glow {
+            position: fixed;
+            inset: 0;
             z-index: -1;
-            overflow: hidden;
+            background:
+                radial-gradient(60% 50% at 18% 10%, rgba(var(--accent-rgb), 0.10), transparent 70%),
+                radial-gradient(50% 45% at 85% 85%, rgba(167,139,250,0.10), transparent 70%),
+                radial-gradient(circle, transparent 35%, var(--bg) 100%);
+            pointer-events: none;
         }
 
-        .video-container video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: brightness(0.4);
-        }
-
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, transparent 20%, var(--bg-black) 100%);
-        }
-
-        /* Navigation */
+        /* Navegação */
         nav {
             position: fixed;
             top: 0;
             width: 100%;
-            padding: 2rem;
+            padding: 1.4rem 2rem;
             display: flex;
             justify-content: center;
-            gap: 3rem;
+            gap: 2.5rem;
             z-index: 100;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            background: linear-gradient(to bottom, rgba(7,9,15,0.92), transparent);
         }
-
         nav a {
-            color: var(--text-white);
+            color: var(--muted);
             text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 0.9rem;
-            font-weight: 600;
+            font-family: var(--mono);
+            text-transform: lowercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+            font-weight: 500;
             transition: var(--transition);
             cursor: pointer;
         }
+        
+        nav a:hover, nav a.active { color: var(--accent); text-shadow: 0 0 12px rgba(var(--accent-rgb), 0.6); }
 
-        nav a:hover, nav a.active {
-            color: var(--primary-gold);
-            text-shadow: 0 0 10px var(--primary-gold);
-        }
-
-        /* Sections Logic */
+        /* Seções */
         section {
             display: none;
             min-height: 100vh;
-            padding: 100px 10%;
+            padding: 100px 8% 70px;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            animation: fadeIn 0.8s ease-out;
+            animation: fadeIn 0.7s ease-out;
         }
-
         section.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Home Section */
-        #home h1 {
-            font-size: 3.5rem;
-            text-align: center;
-            margin-bottom: 1.5rem;
+        .sec-title {
+            font-size: 2.4rem;
+            font-weight: 800;
             letter-spacing: -1px;
-        }
-
-        #home h1 span { color: var(--primary-gold); }
-
-        .btn-explorer {
-            padding: 1rem 2rem;
-            border: 2px solid var(--primary-gold);
-            color: var(--primary-gold);
-            text-decoration: none;
-            text-transform: uppercase;
-            font-weight: bold;
-            border-radius: 5px;
-            transition: var(--transition);
-            background: transparent;
-            cursor: pointer;
-        }
-
-        .btn-explorer:hover {
-            background: var(--primary-gold);
-            color: black;
-            box-shadow: 0 0 30px rgba(255, 180, 0, 0.4);
-        }
-
-        /* Projects Grid */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            width: 100%;
-            margin-top: 3rem;
-        }
-
-        .project-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #333;
-            transition: var(--transition);
-        }
-
-        .project-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary-gold);
-        }
-
-        .project-img {
-            height: 200px;
-            background: #252525; /* Placeholder */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #555;
-        }
-
-        .project-info { padding: 1.5rem; }
-        .project-info h3 { margin-bottom: 0.5rem; color: var(--primary-gold); }
-        .project-tags { font-size: 0.8rem; opacity: 0.7; margin-bottom: 1rem; }
-
-        /* NOVA SEÇÃO DE CONTATO ESTILO RODVERSE */
-        #contato .contact-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 4rem 2rem;
-            width: 100%;
-            max-width: 800px;
+            margin-bottom: 0.6rem;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        #contato h2 {
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            font-size: 4rem;
-            font-weight: 400;
-            color: white;
-            margin-bottom: 1.5rem;
-        }
-
-        #contato p {
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.8);
+        .sec-title span { color: var(--accent); }
+        .sec-sub {
+            color: var(--muted);
             margin-bottom: 2.5rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            text-align: center;
+            max-width: 620px;
             line-height: 1.6;
+            font-size: 0.98rem;
+        }
+        .eyebrow {
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            color: var(--accent);
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
         }
 
-        .btn-whatsapp {
+        /* Botões */
+        .btn-explorer {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            background-color: var(--whatsapp-green);
-            color: white;
+            gap: 0.6rem;
+            padding: 0.9rem 1.7rem;
+            border: 1px solid var(--accent);
+            color: var(--accent);
             text-decoration: none;
-            padding: 1rem 2rem;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 1.1rem;
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-radius: 8px;
             transition: var(--transition);
-        }
-
-        .btn-whatsapp:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);
-        }
-
-        .btn-whatsapp i {
-            font-size: 1.5rem;
-        }
-
-        .additional-info {
-            margin-top: 2rem;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .additional-info a {
-            color: rgba(255, 255, 255, 0.6);
-            text-decoration: none;
-            transition: 0.3s;
-        }
-
-        .additional-info a:hover {
-            color: white;
-        }
-
-        /* Flip Cards */
-        .flip-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.5rem;
-            width: 100%;
-            max-width: 900px;
-        }
-
-        .flip-card {
-            height: 180px;
-            perspective: 1000px;
+            background: rgba(var(--accent-rgb), 0.06);
             cursor: pointer;
         }
+        .btn-explorer:hover {
+            background: var(--accent);
+            color: #04121a;
+            box-shadow: 0 0 30px rgba(var(--accent-rgb), 0.35);
+        }
+        .btn-ghost {
+            border-color: var(--line);
+            color: var(--text);
+            background: transparent;
+        }
+        .btn-ghost:hover { border-color: var(--accent-2); background: rgba(167,139,250,0.12); color: #fff; box-shadow: none; }
 
-        .flip-inner {
-            position: relative;
+        /* HOME */
+        #home { text-align: center; }
+        #home h1 {
+            font-size: clamp(2.4rem, 7vw, 4.6rem);
+            font-weight: 800;
+            letter-spacing: -2px;
+            line-height: 1.05;
+            margin-bottom: 0.9rem;
+        }
+        #home h1 .grad {
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .role {
+            font-family: var(--mono);
+            font-size: clamp(0.95rem, 2.2vw, 1.15rem);
+            color: var(--accent);
+            margin-bottom: 1.2rem;
+        }
+        .tagline {
+            max-width: 640px;
+            font-size: 1.15rem;
+            line-height: 1.6;
+            color: var(--muted);
+            margin-bottom: 2rem;
+        }
+        .tagline strong { color: var(--text); font-weight: 600; }
+
+        .terminal {
             width: 100%;
-            height: 100%;
+            max-width: 620px;
+            background: rgba(10,14,22,0.82);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            backdrop-filter: blur(8px);
+            text-align: left;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+        }
+        .terminal-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.6rem 0.9rem;
+            border-bottom: 1px solid var(--line);
+        }
+        .terminal-bar i { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.18); display: block; }
+        .terminal-bar span { margin-left: 0.6rem; font-family: var(--mono); font-size: 0.7rem; color: rgba(255,255,255,0.35); }
+        .terminal-body {
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            line-height: 1.7;
+            padding: 1rem 1.1rem;
+            min-height: 112px;
+            color: var(--text);
+        }
+        .t-line { white-space: pre-wrap; word-break: break-word; }
+        .t-prompt { color: var(--accent-2); }
+        .t-ok { color: #4ade80; }
+        .t-dim { color: rgba(255,255,255,0.45); }
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1em;
+            background: var(--accent);
+            vertical-align: -2px;
+            margin-left: 2px;
+            animation: blink 1s steps(2) infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .home-ctas { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 2.5rem; }
+
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            max-width: 900px;
+        }
+        .stat {
+            flex: 1 1 170px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 1rem 1.1rem;
+            text-align: left;
+        }
+        .stat b {
+            display: block;
+            font-family: var(--mono);
+            font-size: 1.35rem;
+            color: var(--accent);
+            margin-bottom: 0.25rem;
+        }
+        .stat span { font-size: 0.78rem; color: var(--muted); line-height: 1.4; display: block; }
+
+        /* SOBRE */
+        .about-card {
+            max-width: 980px;
+            width: 100%;
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+            background: rgba(255,255,255,0.03);
+            padding: 2.2rem;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        .photo-wrap { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
+        .photo {
+            width: 170px; height: 170px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            overflow: hidden;
+            background: #121826;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 40px rgba(var(--accent-rgb), 0.2);
+        }
+        .photo img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-name { font-family: var(--mono); font-size: 0.75rem; color: var(--accent); letter-spacing: 1px; }
+        .about-text { flex: 1; min-width: 260px; }
+        .about-text p { line-height: 1.8; font-size: 1.02rem; color: rgba(232,236,244,0.86); margin-bottom: 1rem; }
+        .about-text p:last-child { margin-bottom: 0; }
+        .about-text strong { color: #fff; }
+
+        .block-title {
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            color: var(--accent);
+            letter-spacing: 1px;
+            margin: 0 0 1.4rem;
+            text-align: center;
+        }
+        
+
+        /* Como eu trabalho */
+        .process {
+            max-width: 980px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+        .step {
+            background: var(--card-bg);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 1.2rem;
+            transition: var(--transition);
+        }
+        .step:hover { border-color: rgba(var(--accent-rgb), 0.5); transform: translateY(-4px); }
+        .step .n { font-family: var(--mono); font-size: 0.75rem; color: var(--accent-2); }
+        .step h4 { margin: 0.35rem 0 0.4rem; font-size: 1rem; }
+        .step p { font-size: 0.85rem; line-height: 1.55; color: var(--muted); }
+
+        /* Trajetória */
+        .timeline {
+            max-width: 780px;
+            width: 100%;
+            border-left: 1px solid var(--line);
+            margin: 0 0 3rem 8px;
+            padding-left: 1.6rem;
+        }
+        .tl-item { position: relative; margin-bottom: 1.5rem; }
+        .tl-item:last-child { margin-bottom: 0; }
+        .tl-item::before {
+            content: "";
+            position: absolute;
+            left: calc(-1.6rem - 5px);
+            top: 0.45rem;
+            width: 9px; height: 9px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.7);
+        }
+        .tl-item .when { font-family: var(--mono); font-size: 0.72rem; color: var(--accent-2); }
+        .tl-item h4 { font-size: 1rem; margin: 0.15rem 0 0.25rem; }
+        .tl-item p { font-size: 0.88rem; color: var(--muted); line-height: 1.55; }
+
+        /* Flip cards (skills) */
+        .flip-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.3rem;
+            width: 100%;
+            max-width: 980px;
+        }
+        .flip-card { height: 230px; perspective: 1000px; cursor: pointer; }
+        .flip-inner {
+            position: relative; width: 100%; height: 100%;
             transform-style: preserve-3d;
             transition: transform 0.65s cubic-bezier(0.4, 0.2, 0.2, 1);
         }
-
-        .flip-card:hover .flip-inner,
-        .flip-card.flipped .flip-inner {
-            transform: rotateY(180deg);
-        }
-
+        .flip-card:hover .flip-inner, .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
         .flip-front, .flip-back {
-            position: absolute;
-            inset: 0;
+            position: absolute; inset: 0;
             border-radius: 14px;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 1.5rem;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 1.3rem;
             background: var(--card-bg);
-            border: 1px solid rgba(255,255,255,0.07);
-            box-shadow: 0 0 18px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.03);
+            border: 1px solid var(--line);
+            border-bottom: 3px solid var(--glow);
             transition: box-shadow 0.3s;
         }
-
-        .flip-card:hover .flip-front {
-            box-shadow: 0 0 28px color-mix(in srgb, var(--glow) 40%, transparent);
-        }
-
-        .flip-front {
-            border-bottom: 3px solid var(--glow);
-        }
-
-        .flip-back {
-            transform: rotateY(180deg);
-            border-bottom: 3px solid var(--glow);
-            align-items: flex-start;
-        }
-
-        .flip-icons {
-            display: flex;
-            gap: 1rem;
-            font-size: 2.2rem;
-            margin-bottom: 0.75rem;
-        }
-
+        .flip-card:hover .flip-front { box-shadow: 0 0 28px color-mix(in srgb, var(--glow) 35%, transparent); }
+        .flip-back { transform: rotateY(180deg); align-items: flex-start; justify-content: flex-start; }
+        .flip-icons { font-size: 2.2rem; margin-bottom: 0.8rem; color: var(--glow); }
         .flip-front h4 {
-            font-size: 0.95rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.85);
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            color: rgba(255,255,255,0.88);
             text-align: center;
         }
-
+        .flip-front small { margin-top: 0.4rem; font-size: 0.72rem; color: var(--muted); text-align: center; }
         .flip-back h4 {
             color: var(--glow);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.75rem;
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            margin-bottom: 0.7rem;
         }
-
-        .flip-back ul {
-            list-style: none;
-            padding: 0;
-            width: 100%;
-        }
-
+        .flip-back ul { list-style: none; width: 100%; }
         .flip-back ul li {
             font-size: 0.85rem;
-            color: rgba(255,255,255,0.8);
-            padding: 0.2rem 0;
+            color: rgba(255,255,255,0.82);
+            padding: 0.28rem 0;
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-
         .flip-back ul li:last-child { border-bottom: none; }
+        .hint { font-size: 0.75rem; color: rgba(255,255,255,0.35); margin-bottom: 1.6rem; font-family: var(--mono); }
 
-        /* Carousel */
-        .carousel-wrapper {
-            width: 100%;
-            max-width: 1000px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2.5rem;
-        }
-
+        /* Carrossel */
+        .carousel-wrapper { width: 100%; max-width: 1000px; display: flex; flex-direction: column; align-items: center; gap: 2rem; }
         .carousel-stage {
-            position: relative;
-            width: 100%;
-            height: 520px;
+            position: relative; width: 100%; height: 560px;
             perspective: 1400px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
         }
-
         .proj-card {
             position: absolute;
-            width: 340px;
+            width: 350px;
             background: var(--card-bg);
             border-radius: 16px;
             overflow: hidden;
-            border: 1px solid #333;
+            border: 1px solid var(--line);
             transition: all 0.7s cubic-bezier(0.4, 2, 0.3, 1);
             will-change: transform, opacity;
-        }
-
-        .proj-card .proj-img {
-            height: 180px;
-            background-size: cover;
-            background-position: center;
-            background-color: #252525;
-            border-bottom: 1px solid #333;
-        }
-
-        .proj-card .proj-body {
-            padding: 1.25rem;
-        }
-
-        .proj-card .proj-body h3 {
-            color: var(--primary-gold);
-            margin-bottom: 0.5rem;
-            font-size: 1.05rem;
-        }
-
-        .proj-card .proj-body p {
-            font-size: 0.88rem;
-            line-height: 1.5;
-            color: rgba(255,255,255,0.78);
-            margin-bottom: 0.75rem;
-        }
-
-        .proj-tags {
-            font-size: 0.75rem !important;
-            opacity: 0.6;
-            margin-bottom: 0.75rem !important;
-        }
-
-        .proj-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            font-size: 0.65rem;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            color: rgba(255,180,0,0.85);
-            border: 1px solid rgba(255,180,0,0.3);
-            background: rgba(255,180,0,0.06);
-            border-radius: 20px;
-            padding: 0.4rem 0.8rem;
-        }
-
-        .proj-badge::before {
-            content: "\f023";
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
-            font-size: 0.7rem;
-        }
-
-        .proj-card {
             cursor: pointer;
         }
-
-        .proj-expand-hint {
-            display: block;
-            margin-top: 0.9rem;
-            font-size: 0.7rem;
+        .proj-card .proj-img {
+            height: 170px;
+            background-size: cover;
+            background-position: center top;
+            background-color: #121826;
+            border-bottom: 1px solid var(--line);
+        }
+        .proj-img.no-shot {
+            display: flex; align-items: center; justify-content: center;
+            font-size: 3.2rem;
+            color: rgba(255,255,255,0.88);
+            background-image:
+                radial-gradient(circle at 25% 20%, rgba(var(--accent-rgb), 0.35), transparent 55%),
+                radial-gradient(circle at 80% 85%, rgba(167,139,250,0.4), transparent 55%),
+                linear-gradient(135deg, #0d1424, #151c33);
+        }
+        .proj-body { padding: 1.15rem 1.25rem 1.25rem; }
+        .proj-kicker { font-family: var(--mono); font-size: 0.68rem; color: var(--accent-2); letter-spacing: 0.5px; margin-bottom: 0.35rem; }
+        .proj-body h3 { color: #fff; margin-bottom: 0.45rem; font-size: 1.08rem; }
+        .proj-body p { font-size: 0.86rem; line-height: 1.5; color: var(--muted); margin-bottom: 0.7rem; }
+        .proj-tags { font-family: var(--mono); font-size: 0.68rem !important; color: rgba(255,255,255,0.5) !important; margin-bottom: 0.8rem !important; line-height: 1.6 !important; }
+        .metric {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            font-family: var(--mono);
+            font-size: 0.74rem;
+            color: #4ade80;
+            background: rgba(74,222,128,0.08);
+            border: 1px solid rgba(74,222,128,0.25);
+            border-radius: 20px;
+            padding: 0.35rem 0.8rem;
+            margin-right: 0.4rem;
+        }
+        .proj-badge {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            font-family: var(--mono);
+            font-size: 0.62rem;
             letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: rgba(var(--accent-rgb), 0.9);
+            border: 1px solid rgba(var(--accent-rgb), 0.3);
+            background: rgba(var(--accent-rgb), 0.06);
+            border-radius: 20px;
+            padding: 0.35rem 0.7rem;
+        }
+        .proj-badge::before { content: "\f023"; font-family: "Font Awesome 6 Free"; font-weight: 900; font-size: 0.65rem; }
+        .proj-expand-hint {
+            display: block; margin-top: 0.8rem;
+            font-family: var(--mono); font-size: 0.68rem;
             color: rgba(255,255,255,0.35);
-            opacity: 0;
-            transform: translateY(4px);
+            opacity: 0; transform: translateY(4px);
             transition: var(--transition);
         }
+        .proj-card[data-state="center"]:hover .proj-expand-hint { opacity: 1; transform: translateY(0); color: var(--accent); }
 
-        .proj-card[data-state="center"]:hover .proj-expand-hint {
-            opacity: 1;
-            transform: translateY(0);
-            color: var(--primary-gold);
+        .proj-card[data-state="center"] {
+            transform: translateX(0) translateY(0) scale(1) rotateY(0deg);
+            opacity: 1; z-index: 3;
+            border-color: rgba(var(--accent-rgb), 0.6);
+            box-shadow: 0 0 45px rgba(var(--accent-rgb), 0.14);
         }
+        .proj-card[data-state="left"] { transform: translateX(-290px) translateY(-40px) scale(0.82) rotateY(18deg); opacity: 0.5; z-index: 2; pointer-events: none; }
+        .proj-card[data-state="right"] { transform: translateX(290px) translateY(-40px) scale(0.82) rotateY(-18deg); opacity: 0.5; z-index: 2; pointer-events: none; }
+        .proj-card[data-state="hidden"] { opacity: 0; z-index: 1; pointer-events: none; transform: translateX(0) scale(0.7); }
 
-        /* Project Modal */
+        .carousel-controls { display: flex; align-items: center; gap: 1.5rem; }
+        .carousel-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .carousel-btn:hover { background: var(--accent); color: #04121a; box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.4); }
+        .carousel-dots { display: flex; gap: 8px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.22); transition: 0.3s; cursor: pointer; }
+        .dot.active { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+
+        /* Modal */
         .proj-modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.85);
+            position: fixed; inset: 0;
+            background: rgba(3,5,10,0.86);
             backdrop-filter: blur(6px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 2rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            display: none; align-items: center; justify-content: center;
+            z-index: 1000; padding: 2rem;
+            opacity: 0; transition: opacity 0.3s ease;
         }
-
-        .proj-modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
-
+        .proj-modal-overlay.active { display: flex; opacity: 1; }
         .proj-modal {
             background: var(--card-bg);
-            border: 1px solid rgba(255,180,0,0.25);
+            border: 1px solid rgba(var(--accent-rgb), 0.25);
             border-radius: 18px;
-            max-width: 800px;
-            width: 100%;
-            max-height: 88vh;
-            overflow-y: auto;
-            position: relative;
+            max-width: 820px; width: 100%; max-height: 90vh;
+            overflow-y: auto; position: relative;
             transform: scale(0.92) translateY(10px);
             transition: transform 0.35s cubic-bezier(0.4, 2, 0.3, 1);
             box-shadow: 0 30px 80px rgba(0,0,0,0.6);
         }
-
-        .proj-modal-overlay.active .proj-modal {
-            transform: scale(1) translateY(0);
-        }
-
+        .proj-modal-overlay.active .proj-modal { transform: scale(1) translateY(0); }
         .proj-modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: none;
-            background: rgba(0,0,0,0.6);
-            color: white;
-            font-size: 1.6rem;
-            line-height: 1;
-            cursor: pointer;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: absolute; top: 1rem; right: 1rem;
+            width: 40px; height: 40px; border-radius: 50%;
+            border: none; background: rgba(0,0,0,0.65); color: #fff;
+            font-size: 1.6rem; line-height: 1; cursor: pointer; z-index: 2;
+            display: flex; align-items: center; justify-content: center;
             transition: var(--transition);
         }
-
-        .proj-modal-close:hover {
-            background: var(--primary-gold);
-            color: black;
-        }
-
+        .proj-modal-close:hover { background: var(--accent); color: #04121a; }
         .proj-modal-img {
+            width: 100%; height: 340px;
+            background-size: cover; background-position: top center;
+            border-radius: 18px 18px 0 0; background-color: #121826;
+        }
+        .proj-modal-img.no-shot { display: flex; align-items: center; justify-content: center; font-size: 4rem; color: rgba(255,255,255,0.9); height: 220px; }
+        .proj-modal-body { padding: 1.8rem 2.2rem 2.2rem; }
+        .proj-modal-body h3 { font-size: 1.55rem; margin-bottom: 0.5rem; }
+        .case-grid { display: grid; gap: 1rem; margin: 1.3rem 0; }
+        .case { border-left: 2px solid var(--line); padding-left: 1rem; }
+        .case.result { border-left-color: #4ade80; }
+        .case .lbl { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 1px; color: var(--accent); margin-bottom: 0.3rem; text-transform: uppercase; }
+        .case.result .lbl { color: #4ade80; }
+        .case p { font-size: 0.97rem; line-height: 1.65; color: rgba(232,236,244,0.86); }
+
+        /* Contato */
+        #contato .contact-card {
+            background: rgba(255,255,255,0.04);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3.5rem 2rem;
             width: 100%;
-            height: 380px;
-            background-size: cover;
-            background-position: top center;
-            border-radius: 18px 18px 0 0;
-            background-color: #1a1a1a;
+            max-width: 780px;
+            text-align: center;
+            border: 1px solid var(--line);
         }
-
-        .proj-modal-body {
-            padding: 2rem 2.25rem 2.25rem;
+        #contato h2 { font-size: 2.8rem; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 1rem; }
+        #contato h2 span { color: var(--accent); }
+        #contato .lead { font-size: 1.05rem; color: var(--muted); margin: 0 auto 2rem; max-width: 560px; line-height: 1.65; }
+        .contact-actions { display: flex; flex-wrap: wrap; gap: 0.9rem; justify-content: center; margin-bottom: 1.8rem; }
+        .btn-whatsapp {
+            display: inline-flex; align-items: center; gap: 10px;
+            background-color: var(--whatsapp-green); color: #fff; text-decoration: none;
+            padding: 0.9rem 1.7rem; border-radius: 8px;
+            font-weight: 600; font-size: 0.95rem; transition: var(--transition);
         }
+        .btn-whatsapp:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(37,211,102,0.3); }
+        .contact-links { display: flex; gap: 1.6rem; justify-content: center; font-size: 1.5rem; }
+        .contact-links a { color: var(--muted); transition: 0.3s; }
+        .contact-links a:hover { color: var(--accent); }
+        .mail { font-family: var(--mono); font-size: 0.85rem; color: var(--muted); margin-bottom: 1.2rem; }
+        .mail a { color: var(--text); text-decoration: none; border-bottom: 1px dashed rgba(255,255,255,0.3); }
 
-        .proj-modal-body h3 {
-            color: var(--primary-gold);
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .proj-modal-body p {
-            font-size: 1rem;
-            line-height: 1.7;
-            color: rgba(255,255,255,0.85);
-            margin-bottom: 1.25rem;
-        }
-
-        .proj-modal-body #modalAction {
-            margin-top: 0.5rem;
-        }
-
-        @media (max-width: 600px) {
-            .proj-modal-img { height: 220px; }
-            .proj-modal-body { padding: 1.5rem; }
-        }
-
-        /* Card states */
-        .proj-card[data-state="center"] {
-            transform: translateX(0) translateY(0) scale(1) rotateY(0deg);
-            opacity: 1;
-            z-index: 3;
-            border-color: var(--primary-gold);
-            box-shadow: 0 0 40px rgba(255,180,0,0.15);
-        }
-
-        .proj-card[data-state="left"] {
-            transform: translateX(-280px) translateY(-40px) scale(0.82) rotateY(18deg);
-            opacity: 0.55;
-            z-index: 2;
-            pointer-events: none;
-        }
-
-        .proj-card[data-state="right"] {
-            transform: translateX(280px) translateY(-40px) scale(0.82) rotateY(-18deg);
-            opacity: 0.55;
-            z-index: 2;
-            pointer-events: none;
-        }
-
-        .proj-card[data-state="hidden"] {
-            opacity: 0;
-            z-index: 1;
-            pointer-events: none;
-            transform: translateX(0) scale(0.7);
-        }
-
-        .carousel-controls {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .carousel-btn {
-            background: #161616;
-            border: 2px solid var(--primary-gold);
-            color: var(--primary-gold);
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .carousel-btn:hover {
-            background: var(--primary-gold);
-            color: black;
-            box-shadow: 0 0 20px rgba(255,180,0,0.4);
-        }
-
-        .carousel-dots {
-            display: flex;
-            gap: 8px;
-        }
-
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.25);
-            transition: 0.3s;
-            cursor: pointer;
-        }
-
-        .dot.active {
-            background: var(--primary-gold);
-            box-shadow: 0 0 8px var(--primary-gold);
-        }
-
-        /* Responsive */
+        /* Responsivo */
         @media (max-width: 768px) {
-            #home h1 { font-size: 2rem; }
-            nav { gap: 1rem; padding: 1rem; font-size: 0.7rem; }
-            #contato h2 { font-size: 2.5rem; }
-            #contato .contact-card { padding: 2rem 1rem; }
-            .flip-grid { grid-template-columns: 1fr 1fr; }
-            .proj-card[data-state="left"],
-            .proj-card[data-state="right"] { opacity: 0; }
-            .carousel-stage { height: 480px; }
-            .proj-card { width: 290px; }
+            nav { gap: 1.2rem; padding: 1rem; }
+            nav a { font-size: 0.75rem; }
+            section { padding: 85px 6% 50px; }
+            .sec-title { font-size: 1.9rem; }
+            #contato h2 { font-size: 2rem; }
+            #contato .contact-card { padding: 2rem 1.2rem; }
+            .about-card { padding: 1.5rem; gap: 1.5rem; }
+            .proj-card[data-state="left"], .proj-card[data-state="right"] { opacity: 0; }
+            .carousel-stage { height: 580px; overflow: hidden; }
+            .proj-card { width: 300px; }
+            .proj-modal-img { height: 200px; }
+            .proj-modal-body { padding: 1.4rem; }
+            .terminal-body { font-size: 0.75rem; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; }
         }
     </style>
 </head>
 <body>
 
-    <div class="video-container">
-        <video autoplay muted loop playsinline>
-            <source src="video-background.mp4" type="video/mp4">
-        </video>
-        <div class="overlay"></div>
-    </div>
+    <canvas id="bg-canvas" aria-hidden="true"></canvas>
+    <div class="bg-glow"></div>
 
     <nav id="main-nav">
-        <a onclick="showSection('home')" class="active">Home</a>
-        <a onclick="showSection('sobre')">Sobre</a>
-        <a onclick="showSection('projetos')">Projetos</a>
-        <a onclick="showSection('contato')">Contato</a>
+        <a data-section="home" onclick="showSection('home')" class="active">home</a>
+        <a data-section="sobre" onclick="showSection('sobre')">sobre</a>
+        <a data-section="projetos" onclick="showSection('projetos')">projetos</a>
+        <a data-section="contato" onclick="showSection('contato')">contato</a>
     </nav>
 
+    <!-- HOME -->
     <section id="home" class="active">
-        <h1>FELIPE FERNANDES | <span>DEV FULLSTACK</span></h1>
-        <button class="btn-explorer" onclick="showSection('projetos')">Explorar Portfólio <i class="fas fa-arrow-right"></i></button>
+        <div class="eyebrow">olá, eu sou o</div>
+        <h1>Felipe <span class="grad">Fernandes</span></h1>
+        <div class="role">Desenvolvedor de IA &amp; Automação</div>
+        <p class="tagline">Construo <strong>agentes e automações</strong> que tiram o trabalho repetitivo da operação, para as pessoas gastarem tempo no que realmente exige cabeça.</p>
+
+        <div class="terminal" role="img" aria-label="Exemplo de automação rodando no terminal">
+            <div class="terminal-bar"><i></i><i></i><i></i><span>automacao.py</span></div>
+            <div class="terminal-body" id="terminal"></div>
+        </div>
+
+        <div class="home-ctas">
+            <button class="btn-explorer" onclick="showSection('projetos')">ver projetos <i class="fas fa-arrow-right"></i></button>
+            <button class="btn-explorer btn-ghost" onclick="showSection('contato')">falar comigo <i class="fas fa-comment-dots"></i></button>
+        </div>
+
+        <div class="stats">
+            <div class="stat"><b>30 → 5 min</b><span>para montar o cronograma de um evento</span></div>
+            <div class="stat"><b>3 s</b><span>para achar qualquer um de 500+ códigos de atividade</span></div>
+            <div class="stat"><b>7 → 1</b><span>relatórios de estágio unificados em uma visão de gestão</span></div>
+            <div class="stat"><b>5</b><span>ferramentas internas em produção na V3A</span></div>
+        </div>
     </section>
 
+    <!-- SOBRE -->
     <section id="sobre">
-        <h2 style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 3rem; margin-bottom: 2rem;">Minha Trajetória</h2>
-        
-        <div style="max-width: 950px; display: flex; gap: 3rem; align-items: center; background: rgba(255, 255, 255, 0.03); padding: 2.5rem; border-radius: 15px; border: 1px solid rgba(255, 180, 0, 0.2); margin-bottom: 3rem; flex-wrap: wrap;">
-            <!-- Foto -->
-            <div style="flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
-                <div id="profile-photo-wrapper" style="width: 180px; height: 180px; border-radius: 50%; border: 3px solid var(--primary-gold); overflow: hidden; background: #1a1a1a; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(255, 180, 0, 0.2);">
-                    <img id="profile-photo" src="profile.jpg" alt="Felipe Fernandes" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; document.getElementById('photo-placeholder').style.display='flex';">
-                    <div id="photo-placeholder" style="display:none; flex-direction: column; align-items: center; justify-content: center; width:100%; height:100%; color: rgba(255,255,255,0.3);">
-                        <i class="fas fa-user" style="font-size: 3rem;"></i>
-                        <span style="font-size: 0.65rem; margin-top: 0.4rem;">Sua foto aqui</span>
-                    </div>
-                </div>
-                <span style="font-size: 0.8rem; color: var(--primary-gold); letter-spacing: 1px; text-transform: uppercase; font-weight: 600;">Felipe Fernandes</span>
+        <h2 class="sec-title">Quem está por <span>trás</span></h2>
+        <p class="sec-sub">Do operacional de eventos para a automação: eu entendo o processo de dentro antes de escrever a primeira linha.</p>
+
+        <div class="about-card">
+            <div class="photo-wrap">
+                <div class="photo"><img src="profile.jpg" alt="Felipe Fernandes"></div>
+                <span class="photo-name">felipe.fernandes</span>
             </div>
-            <!-- Texto -->
-            <div style="flex: 1; min-width: 260px;">
-                <p style="text-align: justify; line-height: 1.8; font-size: 1.05rem; color: rgba(255, 255, 255, 0.9);">
-                    Desenvolvedor <strong>FullStack | Especialista em Automação e IA</strong>.
-                    <br><br>
-                    Transformo lógica e código em soluções digitais de alto impacto. Unindo minha base em <strong>Engenharia de Software</strong> com a potência do <strong>Python e Django</strong>, desenvolvo sistemas rápidos, seguros e integrados com as tecnologias mais modernas do mercado.
-                    <br><br>
-                    Meu diferencial está na <strong>engenharia de automação e inteligência artificial</strong>: crio bots customizados, automatizo tarefas complexas e conecto modelos de IA (como <strong>ChatGPT e Claude</strong>) diretamente no Back-End das aplicações.
-                </p>
+            <div class="about-text">
+                <p>Sou <strong>desenvolvedor de IA &amp; Automação</strong> na V3A, agência de live marketing. Transformo processos manuais em sistemas que rodam sozinhos, usando <strong>LLMs (Claude e OpenAI), Python e n8n</strong>.</p>
+                <p>Antes de programar, vivi a operação de feiras, eventos e congressos. Por isso mapeio o processo antes de automatizar e acompanho a adoção: automação boa é a que o time realmente usa.</p>
+                <p>Minha base é <strong>Engenharia de Software</strong> (Python, Django, Next.js, SQL), o que me deixa entregar a ferramenta inteira, não só o prompt.</p>
             </div>
         </div>
 
-        <h3 style="color: var(--primary-gold); margin-bottom: 2rem; letter-spacing: 2px; text-transform: uppercase;">Habilidades Técnicas</h3>
-        <p style="font-size: 0.8rem; color: rgba(255,255,255,0.4); margin-bottom: 2rem; letter-spacing: 1px;">Passe o mouse (ou toque) para ver os detalhes</p>
-        
+        <div class="block-title">como eu trabalho</div>
+        <div class="process">
+            <div class="step"><div class="n">01</div><h4>Mapear a dor</h4><p>Converso com quem faz o trabalho e acho o gargalo que mais custa tempo.</p></div>
+            <div class="step"><div class="n">02</div><h4>Prototipar com IA</h4><p>Testo o LLM no caso real, com saída estruturada, antes de investir em tela.</p></div>
+            <div class="step"><div class="n">03</div><h4>Medir o resultado</h4><p>Comparo o antes e o depois em minutos, não em opinião.</p></div>
+            <div class="step"><div class="n">04</div><h4>Colocar em produção</h4><p>Deploy, versionamento e acompanhamento do time usando no dia a dia.</p></div>
+        </div>
+
+        <div class="block-title">trajetória</div>
+        <div class="timeline">
+            <div class="tl-item">
+                <div class="when">JUL/2026 — ATUAL</div>
+                <h4>Desenvolvedor de IA &amp; Automação · V3A</h4>
+                <p>Ferramentas internas em produção com Claude API, Python, Next.js e Supabase: de cronogramas de eventos a dashboards de gestão.</p>
+            </div>
+            <div class="tl-item">
+                <div class="when">SET/2024 — JUL/2026</div>
+                <h4>Assistente Administrativo · eventos e congressos</h4>
+                <p>Apoio operacional que deu a base de processos que hoje eu automatizo.</p>
+            </div>
+            <div class="tl-item">
+                <div class="when">PROJETOS AUTORAIS</div>
+                <h4>AG7 · IA, automação e web</h4>
+                <p>Painel de gestão gamificado com IA, automação de slides e protótipos de plataformas de eventos.</p>
+            </div>
+        </div>
+
+        <div class="block-title">stack</div>
+        <p class="hint">passe o mouse (ou toque) nos cards</p>
+
         <div class="flip-grid">
 
-            <!-- Card 1: Linguagens -->
             <div class="flip-card" onclick="this.classList.toggle('flipped')">
                 <div class="flip-inner">
-                    <div class="flip-front" style="--glow: #ffb400;">
-                        <div class="flip-icons">
-                            <i class="fab fa-python" style="color: #3776AB;"></i>
-                            <i class="fab fa-js-square" style="color: #f7df1e;"></i>
-                        </div>
-                        <h4>Linguagens</h4>
+                    <div class="flip-front" style="--glow: #22d3ee;">
+                        <div class="flip-icons"><i class="fas fa-brain"></i></div>
+                        <h4>Modelos &amp; Prompts</h4>
+                        <small>LLMs na prática</small>
                     </div>
-                    <div class="flip-back" style="--glow: #ffb400;">
-                        <h4><i class="fas fa-code"></i> Linguagens</h4>
+                    <div class="flip-back" style="--glow: #22d3ee;">
+                        <h4>Modelos &amp; Prompts</h4>
                         <ul>
-                            <li>Python</li>
-                            <li>JavaScript</li>
-                            <li>TypeScript</li>
-                            <li>HTML5 &amp; CSS3</li>
-                            <li>React</li>
-                            <li>Node.js</li>
+                            <li>Claude API (Anthropic)</li>
+                            <li>OpenAI API</li>
+                            <li>Prompt Engineering</li>
+                            <li>Saídas estruturadas (JSON)</li>
+                            <li>Embeddings &amp; RAG</li>
                         </ul>
                     </div>
                 </div>
             </div>
 
-            <!-- Card 2: Back-End -->
-            <div class="flip-card" onclick="this.classList.toggle('flipped')">
-                <div class="flip-inner">
-                    <div class="flip-front" style="--glow: #3498db;">
-                        <div class="flip-icons">
-                            <i class="fas fa-server" style="color: #3498db;"></i>
-                        </div>
-                        <h4>Back-End</h4>
-                    </div>
-                    <div class="flip-back" style="--glow: #3498db;">
-                        <h4><i class="fas fa-server"></i> Back-End</h4>
-                        <ul>
-                            <li>Django</li>
-                            <li>APIs REST</li>
-                            <li>Arquitetura MVC</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3: Banco de Dados -->
-            <div class="flip-card" onclick="this.classList.toggle('flipped')">
-                <div class="flip-inner">
-                    <div class="flip-front" style="--glow: #e67e22;">
-                        <div class="flip-icons">
-                            <i class="fas fa-database" style="color: #e67e22;"></i>
-                        </div>
-                        <h4>Banco de Dados</h4>
-                    </div>
-                    <div class="flip-back" style="--glow: #e67e22;">
-                        <h4><i class="fas fa-database"></i> Banco de Dados</h4>
-                        <ul>
-                            <li>MySQL</li>
-                            <li>SQLite</li>
-                            <li>Modelagem Relacional (SQL)</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 4: IA & Automação -->
             <div class="flip-card" onclick="this.classList.toggle('flipped')">
                 <div class="flip-inner">
                     <div class="flip-front" style="--glow: #a78bfa;">
-                        <div class="flip-icons">
-                            <i class="fas fa-brain" style="color: #a78bfa;"></i>
-                        </div>
-                        <h4>IA &amp; Automação</h4>
+                        <div class="flip-icons"><i class="fas fa-robot"></i></div>
+                        <h4>Agentes &amp; Workflows</h4>
+                        <small>IA que executa tarefas</small>
                     </div>
                     <div class="flip-back" style="--glow: #a78bfa;">
-                        <h4><i class="fas fa-brain"></i> IA &amp; Automação</h4>
+                        <h4>Agentes &amp; Workflows</h4>
                         <ul>
-                            <li>OpenAI API (ChatGPT)</li>
-                            <li>Claude (Anthropic)</li>
-                            <li>Engenharia de Prompt</li>
-                            <li>Bots &amp; Web Scraping</li>
+                            <li>Agentes de IA</li>
+                            <li>Function / Tool Calling</li>
+                            <li>n8n</li>
+                            <li>Webhooks</li>
                         </ul>
                     </div>
                 </div>
             </div>
 
-            <!-- Card 5: Qualidade & Engenharia -->
             <div class="flip-card" onclick="this.classList.toggle('flipped')">
                 <div class="flip-inner">
-                    <div class="flip-front" style="--glow: #2ecc71;">
-                        <div class="flip-icons">
-                            <i class="fas fa-check-double" style="color: #2ecc71;"></i>
-                        </div>
-                        <h4>Qualidade &amp; Engenharia</h4>
+                    <div class="flip-front" style="--glow: #4ade80;">
+                        <div class="flip-icons"><i class="fas fa-plug"></i></div>
+                        <h4>Automação &amp; Integração</h4>
+                        <small>conectar sistemas</small>
                     </div>
-                    <div class="flip-back" style="--glow: #2ecc71;">
-                        <h4><i class="fas fa-check-double"></i> Qualidade</h4>
+                    <div class="flip-back" style="--glow: #4ade80;">
+                        <h4>Automação &amp; Integração</h4>
                         <ul>
-                            <li>Clean Code &amp; POO</li>
-                            <li>VibeCode</li>
-                            <li>Estruturas de Dados</li>
-                            <li>UML</li>
-                            <li>Requisitos e Testes</li>
+                            <li>APIs REST</li>
+                            <li>RPA com Python</li>
+                            <li>Web Scraping</li>
+                            <li>API Wrike</li>
+                            <li>Google Drive API</li>
                         </ul>
                     </div>
                 </div>
             </div>
 
-            <!-- Card 6: Ferramentas -->
             <div class="flip-card" onclick="this.classList.toggle('flipped')">
                 <div class="flip-inner">
-                    <div class="flip-front" style="--glow: #9b59b6;">
-                        <div class="flip-icons">
-                            <i class="fab fa-git-alt" style="color: #f05032;"></i>
-                            <i class="fab fa-github" style="color: #9b59b6;"></i>
-                        </div>
-                        <h4>Ferramentas &amp; Métodos</h4>
+                    <div class="flip-front" style="--glow: #f7df1e;">
+                        <div class="flip-icons"><i class="fab fa-python"></i></div>
+                        <h4>Linguagens</h4>
+                        <small>a base de tudo</small>
                     </div>
-                    <div class="flip-back" style="--glow: #9b59b6;">
-                        <h4><i class="fas fa-tools"></i> Ferramentas</h4>
+                    <div class="flip-back" style="--glow: #f7df1e;">
+                        <h4>Linguagens</h4>
                         <ul>
+                            <li>Python</li>
+                            <li>SQL</li>
+                            <li>TypeScript</li>
+                            <li>JavaScript</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                <div class="flip-inner">
+                    <div class="flip-front" style="--glow: #fb923c;">
+                        <div class="flip-icons"><i class="fas fa-layer-group"></i></div>
+                        <h4>Apps &amp; Dados</h4>
+                        <small>a ferramenta inteira</small>
+                    </div>
+                    <div class="flip-back" style="--glow: #fb923c;">
+                        <h4>Apps &amp; Dados</h4>
+                        <ul>
+                            <li>Next.js · React</li>
+                            <li>Django · APIs REST</li>
+                            <li>PostgreSQL (Supabase)</li>
+                            <li>MySQL · SQLite</li>
+                            <li>Modelagem relacional</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                <div class="flip-inner">
+                    <div class="flip-front" style="--glow: #f472b6;">
+                        <div class="flip-icons"><i class="fab fa-docker"></i></div>
+                        <h4>Deploy &amp; Ferramentas</h4>
+                        <small>do código ao ar</small>
+                    </div>
+                    <div class="flip-back" style="--glow: #f472b6;">
+                        <h4>Deploy &amp; Ferramentas</h4>
+                        <ul>
+                            <li>Docker</li>
                             <li>Git &amp; GitHub</li>
-                            <li>VS Code &amp; Postman</li>
+                            <li>Vercel</li>
+                            <li>Postman</li>
                             <li>Scrum / Kanban</li>
                         </ul>
                     </div>
@@ -810,130 +788,177 @@
         </div>
     </section>
 
+    <!-- PROJETOS -->
     <section id="projetos">
-        <h2 style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 3rem; margin-bottom: 3rem;">Projetos Selecionados</h2>
+        <h2 class="sec-title">Projetos <span>em produção</span></h2>
+        <p class="sec-sub">Cada projeto parte de um problema real. Clique no card central para ver o problema, o que construí e o resultado.</p>
 
         <div class="carousel-wrapper">
             <div class="carousel-stage" id="carouselStage">
 
                 <div class="proj-card" data-index="0"
-                    data-img="pe-confortavel-preview.png"
-                    data-title="Pé Confortável (E-commerce)"
-                    data-desc="Plataforma completa de e-commerce e gestão. Inclui painel administrativo para controle de inventário, gestão de fornecedores e dashboard interativo para análise de vendas e lucros."
-                    data-tags="Python • Django • Banco de Dados • HTML/CSS"
-                    data-link="https://github.com/felipefer18/peconfortavel"
-                    data-link-label="VER NO GITHUB"
-                    onclick="openProjectModal(this)">
-                    <div class="proj-img" style="background-image: url('pe-confortavel-preview.png');"></div>
-                    <div class="proj-body">
-                        <h3>Pé Confortável (E-commerce)</h3>
-                        <p>Plataforma completa de e-commerce e gestão. Inclui painel administrativo para controle de inventário, gestão de fornecedores e dashboard interativo para análise de vendas e lucros.</p>
-                        <p class="proj-tags">Python • Django • Banco de Dados • HTML/CSS</p>
-                        <a href="https://github.com/felipefer18/peconfortavel" class="btn-explorer" style="font-size: 0.7rem; padding: 0.5rem 1rem;" target="_blank" onclick="event.stopPropagation()">VER NO GITHUB</a>
-                        <span class="proj-expand-hint"><i class="fas fa-expand"></i> Clique para ampliar</span>
-                    </div>
-                </div>
-
-                <div class="proj-card" data-index="1"
-                    data-img="slides-automation-preview.png"
-                    data-title="Automatização de Slides"
-                    data-desc="Ferramenta de automação em Python para simplificar a criação de apresentações. Transforma diretórios de imagens e PDFs em slides de PowerPoint formatados, seguindo um template pré-definido."
-                    data-tags="Python • Automação • Gerenciamento de Arquivos • Integração Office"
-                    data-link="https://github.com/felipefer18/Automatiza-o-Slides"
-                    data-link-label="VER NO GITHUB"
-                    onclick="openProjectModal(this)">
-                    <div class="proj-img" style="background-image: url('slides-automation-preview.png');"></div>
-                    <div class="proj-body">
-                        <h3>Automatização de Slides</h3>
-                        <p>Ferramenta de automação em Python para simplificar a criação de apresentações. Transforma diretórios de imagens e PDFs em slides de PowerPoint formatados, seguindo um template pré-definido.</p>
-                        <p class="proj-tags">Python • Automação • Gerenciamento de Arquivos • Integração Office</p>
-                        <a href="https://github.com/felipefer18/Automatiza-o-Slides" class="btn-explorer" style="font-size: 0.7rem; padding: 0.5rem 1rem;" target="_blank" onclick="event.stopPropagation()">VER NO GITHUB</a>
-                        <span class="proj-expand-hint"><i class="fas fa-expand"></i> Clique para ampliar</span>
-                    </div>
-                </div>
-
-                <div class="proj-card" data-index="2"
                     data-img="tempos-movimentos-preview.png"
-                    data-title="Plataforma Tempos e Movimentos"
-                    data-desc="A plataforma processa o orçamento aprovado do evento em planilha, identifica cada item, classifica a Ação (Montagem ou Chegada) e preenche a planilha oficial de Tempos e Movimentos com outro template."
-                    data-tags="Next.js + React • Python + FastAPI • PostgreSQL • Vercel"
+                    data-title="Tempos &amp; Movimentos"
+                    data-tags="Python • Claude API • FastAPI • Next.js • PostgreSQL • Vercel"
+                    data-problem="Para cada evento, alguém montava à mão a planilha oficial de Tempos e Movimentos a partir do orçamento aprovado, item por item. Era lento e repetitivo (cerca de 30 minutos)."
+                    data-built="Uma plataforma que lê o orçamento em Excel, usa um LLM (Claude) para identificar e classificar cada item (Montagem ou Chegada) e exporta o cronograma já formatado no template oficial."
+                    data-result="Montagem do cronograma reduzida de 30 para 5 minutos."
                     data-badge="Projeto Interno"
                     onclick="openProjectModal(this)">
                     <div class="proj-img" style="background-image: url('tempos-movimentos-preview.png');"></div>
                     <div class="proj-body">
-                        <h3>Plataforma Tempos e Movimentos</h3>
-                        <p>A plataforma processa o orçamento aprovado do evento em planilha, identifica cada item, classifica a Ação (Montagem ou Chegada) e preenche a planilha oficial de Tempos e Movimentos com outro template.</p>
-                        <p class="proj-tags">Next.js + React • Python + FastAPI • PostgreSQL • Vercel</p>
+                        <div class="proj-kicker">IA · LLM classifica itens</div>
+                        <h3>Tempos &amp; Movimentos</h3>
+                        <p>Lê o orçamento do evento, classifica cada item com IA e entrega o cronograma pronto.</p>
+                        <p class="proj-tags">Python • Claude API • FastAPI • Next.js</p>
+                        <span class="metric"><i class="fas fa-bolt"></i> 30 → 5 min</span>
                         <span class="proj-badge">Projeto Interno</span>
-                        <span class="proj-expand-hint"><i class="fas fa-expand"></i> Clique para ampliar</span>
+                        <span class="proj-expand-hint"><i class="fas fa-expand"></i> clique para ver o caso</span>
+                    </div>
+                </div>
+
+                <div class="proj-card" data-index="1"
+                    data-img="relatorio-pecas-preview.png"
+                    data-title="Relatório de Peças"
+                    data-tags="Python • FastAPI • python-pptx • Google Drive API • JavaScript"
+                    data-problem="O relatório de peças de cada evento era montado slide por slide, juntando imagens e PDFs soltos em pastas e ajustando tudo ao template da agência."
+                    data-built="Uma plataforma que recebe imagens, PDFs ou uma pasta do Google Drive e gera o PowerPoint automaticamente no template da V3A. Cada arquivo ou pasta vira um slide, com as imagens organizadas sem cortes."
+                    data-result="O relatório sai pronto no template, sem montagem manual slide por slide."
+                    data-badge="Projeto Interno"
+                    onclick="openProjectModal(this)">
+                    <div class="proj-img" style="background-image: url('relatorio-pecas-preview.png');"></div>
+                    <div class="proj-body">
+                        <div class="proj-kicker">Automação · Drive → PowerPoint</div>
+                        <h3>Relatório de Peças</h3>
+                        <p>De uma pasta do Drive a um PowerPoint completo, no template da agência.</p>
+                        <p class="proj-tags">Python • FastAPI • python-pptx • Drive API</p>
+                        <span class="metric"><i class="fas fa-bolt"></i> pasta → slides</span>
+                        <span class="proj-badge">Projeto Interno</span>
+                        <span class="proj-expand-hint"><i class="fas fa-expand"></i> clique para ver o caso</span>
+                    </div>
+                </div>
+
+                <div class="proj-card" data-index="2"
+                    data-img="ag7-city-preview.webp"
+                    data-title="AG7 City"
+                    data-tags="Interface isométrica • Assistentes de IA • Dashboard de gestão"
+                    data-problem="A gestão do negócio vivia espalhada em planilhas: caixa, funil, projetos, redes sociais e suporte, cada um num lugar."
+                    data-built="Um painel gamificado em que cada prédio de uma cidade isométrica é um setor do negócio (financeiro, projetos, redes sociais, suporte), mostrando caixa, funil e tarefas, com um assistente de IA em cada setor."
+                    data-result="Substituiu as planilhas e passou a ser usado diariamente."
+                    onclick="openProjectModal(this)">
+                    <div class="proj-img" style="background-image: url('ag7-city-preview.webp');"></div>
+                    <div class="proj-body">
+                        <div class="proj-kicker">IA · gestão gamificada</div>
+                        <h3>AG7 City</h3>
+                        <p>Um painel de gestão onde cada prédio é um setor da empresa, com IA em cada um.</p>
+                        <p class="proj-tags">Interface isométrica • Assistentes de IA</p>
+                        <span class="metric"><i class="fas fa-bolt"></i> uso diário</span>
+                        <span class="proj-expand-hint"><i class="fas fa-expand"></i> clique para ver o caso</span>
                     </div>
                 </div>
 
                 <div class="proj-card" data-index="3"
                     data-img="mapeamento-dores-preview.png"
-                    data-title="Mapeamento de Dores"
-                    data-desc="Plataforma de registro de dores manuais ou longas de processos internos, voltada à construção de automações e à melhoria dos processos internos da empresa, atacando as tarefas mais manuais."
-                    data-tags="React • TypeScript • Tailwind CSS • Vercel • Supabase • PostgreSQL"
+                    data-title="Mapa de Dores"
+                    data-tags="React • TypeScript • Tailwind CSS • Supabase • PostgreSQL • Vercel"
+                    data-problem="Ninguém sabia ao certo quais tarefas manuais mais pesavam no dia a dia, então não dava para priorizar o que automatizar."
+                    data-built="Uma plataforma de diagnóstico em que os colaboradores registram, de forma anônima, as dores manuais e demoradas dos processos. As respostas são consolidadas em um painel único."
+                    data-result="A fila de automações passou a ser priorizada com dados do próprio time, e não por palpite."
                     data-badge="Projeto Interno"
                     onclick="openProjectModal(this)">
                     <div class="proj-img" style="background-image: url('mapeamento-dores-preview.png');"></div>
                     <div class="proj-body">
-                        <h3>Mapeamento de Dores</h3>
-                        <p>Plataforma de registro de dores manuais ou longas de processos internos, voltada à construção de automações e à melhoria dos processos internos da empresa, atacando as tarefas mais manuais.</p>
-                        <p class="proj-tags">React • TypeScript • Tailwind CSS • Vercel • Supabase • PostgreSQL</p>
+                        <div class="proj-kicker">Descoberta · o que automatizar</div>
+                        <h3>Mapa de Dores</h3>
+                        <p>Respostas anônimas do time viram um painel para priorizar as automações.</p>
+                        <p class="proj-tags">React • TypeScript • Supabase • PostgreSQL</p>
+                        <span class="metric"><i class="fas fa-bolt"></i> dados, não palpite</span>
                         <span class="proj-badge">Projeto Interno</span>
-                        <span class="proj-expand-hint"><i class="fas fa-expand"></i> Clique para ampliar</span>
+                        <span class="proj-expand-hint"><i class="fas fa-expand"></i> clique para ver o caso</span>
                     </div>
                 </div>
 
                 <div class="proj-card" data-index="4"
                     data-img="cda-platform-preview.png"
-                    data-title="Consulta CDA"
-                    data-desc="Plataforma feita para consulta de códigos utilizados pelo Banco do Brasil para comprovar itens do evento solicitado."
-                    data-tags="JavaScript • HTML/CSS/TypeScript • API/rotas server-side • Vercel"
+                    data-title="CDA Platform"
+                    data-tags="Next.js • React Query • Supabase • TypeScript • Vercel"
+                    data-problem="Os códigos de atividade usados para comprovar itens de evento ficavam em planilhas, e achar o certo tomava tempo da operação."
+                    data-built="Um catálogo pesquisável com mais de 500 códigos de atividade, com busca rápida e dados no Supabase."
+                    data-result="A operação encontra qualquer código em cerca de 3 segundos."
                     data-badge="Projeto Interno"
                     onclick="openProjectModal(this)">
                     <div class="proj-img" style="background-image: url('cda-platform-preview.png');"></div>
                     <div class="proj-body">
-                        <h3>Consulta CDA</h3>
-                        <p>Plataforma feita para consulta de códigos utilizados pelo Banco do Brasil para comprovar itens do evento solicitado.</p>
-                        <p class="proj-tags">JavaScript • HTML/CSS/TypeScript • API/rotas server-side • Vercel</p>
+                        <div class="proj-kicker">Busca · 500+ códigos</div>
+                        <h3>CDA Platform</h3>
+                        <p>Catálogo de códigos de atividade para comprovar itens de evento.</p>
+                        <p class="proj-tags">Next.js • React Query • Supabase</p>
+                        <span class="metric"><i class="fas fa-bolt"></i> 3 s por busca</span>
                         <span class="proj-badge">Projeto Interno</span>
-                        <span class="proj-expand-hint"><i class="fas fa-expand"></i> Clique para ampliar</span>
+                        <span class="proj-expand-hint"><i class="fas fa-expand"></i> clique para ver o caso</span>
                     </div>
                 </div>
 
                 <div class="proj-card" data-index="5"
-                    data-img="dependencias-bb-preview.png"
-                    data-title="Dependências BB"
-                    data-desc="Plataforma de busca de CNPJ de cada agência por município, bairro ou nome, das agências que atendem o Banco do Brasil."
-                    data-tags="JavaScript/TypeScript • React/Next.js • CSS • API • Vercel"
+                    data-title="Dashboard Wrike"
+                    data-icon="fa-chart-line"
+                    data-tags="HTML • JavaScript • API REST do Wrike"
+                    data-problem="O acompanhamento dos eventos estava dividido em 7 relatórios de estágio no Wrike, e a gestão precisava abrir um por um e procurar a informação em planilhas."
+                    data-built="Um dashboard que consome a API REST do Wrike e consolida os 7 relatórios de estágio em uma única visão de gestão."
+                    data-result="Fim da busca manual: a visão geral está num lugar só."
                     data-badge="Projeto Interno"
                     onclick="openProjectModal(this)">
-                    <div class="proj-img" style="background-image: url('dependencias-bb-preview.png');"></div>
+                    <div class="proj-img no-shot"><i class="fas fa-chart-line"></i></div>
                     <div class="proj-body">
-                        <h3>Dependências BB</h3>
-                        <p>Plataforma de busca de CNPJ de cada agência por município, bairro ou nome, das agências que atendem o Banco do Brasil.</p>
-                        <p class="proj-tags">JavaScript/TypeScript • React/Next.js • CSS • API • Vercel</p>
+                        <div class="proj-kicker">Integração · API Wrike</div>
+                        <h3>Dashboard Wrike</h3>
+                        <p>Sete relatórios de estágio consolidados em uma única visão de gestão.</p>
+                        <p class="proj-tags">HTML • JavaScript • API REST do Wrike</p>
+                        <span class="metric"><i class="fas fa-bolt"></i> 7 → 1 visão</span>
                         <span class="proj-badge">Projeto Interno</span>
-                        <span class="proj-expand-hint"><i class="fas fa-expand"></i> Clique para ampliar</span>
+                        <span class="proj-expand-hint"><i class="fas fa-expand"></i> clique para ver o caso</span>
                     </div>
                 </div>
 
                 <div class="proj-card" data-index="6"
-                    data-img="relatorio-pecas-preview.png"
-                    data-title="Relatório de Peças"
-                    data-desc="Plataforma que gera automaticamente o relatório de peças em PowerPoint a partir de imagens, PDFs ou de uma pasta do Google Drive, seguindo o template da V3A. Cada arquivo ou pasta vira um slide, com as imagens organizadas sem cortes."
-                    data-tags="Python • FastAPI • python-pptx • Google Drive API • JavaScript • HTML/CSS"
-                    data-badge="Projeto Interno"
+                    data-img="slides-automation-preview.png"
+                    data-title="Automatiza Slides"
+                    data-tags="Python • python-pptx • PyMuPDF • Automação de arquivos"
+                    data-problem="Montar uma apresentação a partir de dezenas de fotos e PDFs era trabalho braçal: abrir, redimensionar e posicionar cada arquivo, slide por slide."
+                    data-built="Uma ferramenta em Python que gera um PowerPoint completo a partir de uma pasta com fotos e PDFs, aplicando o template e dimensionando cada arquivo no seu slide."
+                    data-result="Uma pasta vira uma apresentação formatada em um comando."
+                    data-link="https://github.com/felipefer18/Automatiza-o-Slides"
+                    data-link-label="VER NO GITHUB"
                     onclick="openProjectModal(this)">
-                    <div class="proj-img" style="background-image: url('relatorio-pecas-preview.png');"></div>
+                    <div class="proj-img" style="background-image: url('slides-automation-preview.png');"></div>
                     <div class="proj-body">
-                        <h3>Relatório de Peças</h3>
-                        <p>Plataforma que gera automaticamente o relatório de peças em PowerPoint a partir de imagens, PDFs ou de uma pasta do Google Drive, seguindo o template da V3A. Cada arquivo ou pasta vira um slide, com as imagens organizadas sem cortes.</p>
-                        <p class="proj-tags">Python • FastAPI • python-pptx • Google Drive API • JavaScript • HTML/CSS</p>
-                        <span class="proj-badge">Projeto Interno</span>
-                        <span class="proj-expand-hint"><i class="fas fa-expand"></i> Clique para ampliar</span>
+                        <div class="proj-kicker">Automação · open source</div>
+                        <h3>Automatiza Slides</h3>
+                        <p>Transforma uma pasta de fotos e PDFs em um PowerPoint formatado.</p>
+                        <p class="proj-tags">Python • python-pptx • PyMuPDF</p>
+                        <a href="https://github.com/felipefer18/Automatiza-o-Slides" class="btn-explorer" style="font-size: 0.7rem; padding: 0.5rem 1rem;" target="_blank" rel="noopener" onclick="event.stopPropagation()"><i class="fab fa-github"></i> github</a>
+                        <span class="proj-expand-hint"><i class="fas fa-expand"></i> clique para ver o caso</span>
+                    </div>
+                </div>
+
+                <div class="proj-card" data-index="7"
+                    data-img="pe-confortavel-preview.png"
+                    data-title="Pé Confortável (E-commerce)"
+                    data-tags="Python • Django • Banco de Dados • HTML/CSS"
+                    data-problem="Uma loja precisava vender online e, ao mesmo tempo, controlar estoque, fornecedores e lucro em um só lugar."
+                    data-built="Plataforma completa de e-commerce e gestão em Django, com painel administrativo para inventário, gestão de fornecedores e dashboard interativo de vendas e lucros."
+                    data-result="Prova da minha base de engenharia: modelagem relacional, back-end e painel do zero."
+                    data-link="https://github.com/felipefer18/peconfortavel"
+                    data-link-label="VER NO GITHUB"
+                    onclick="openProjectModal(this)">
+                    <div class="proj-img" style="background-image: url('pe-confortavel-preview.png');"></div>
+                    <div class="proj-body">
+                        <div class="proj-kicker">Base de engenharia · full-stack</div>
+                        <h3>Pé Confortável</h3>
+                        <p>E-commerce com painel de estoque, fornecedores e dashboard de vendas.</p>
+                        <p class="proj-tags">Python • Django • HTML/CSS</p>
+                        <a href="https://github.com/felipefer18/peconfortavel" class="btn-explorer" style="font-size: 0.7rem; padding: 0.5rem 1rem;" target="_blank" rel="noopener" onclick="event.stopPropagation()"><i class="fab fa-github"></i> github</a>
+                        <span class="proj-expand-hint"><i class="fas fa-expand"></i> clique para ver o caso</span>
                     </div>
                 </div>
 
@@ -954,50 +979,159 @@
             <div class="proj-modal-img" id="modalImg"></div>
             <div class="proj-modal-body">
                 <h3 id="modalTitle"></h3>
-                <p id="modalDesc"></p>
-                <p class="proj-tags" id="modalTags"></p>
+                <p class="proj-tags" id="modalTags" style="font-family: var(--mono); font-size: 0.78rem; color: var(--muted);"></p>
+                <div class="case-grid">
+                    <div class="case"><div class="lbl">Problema</div><p id="modalProblem"></p></div>
+                    <div class="case"><div class="lbl">O que construí</div><p id="modalBuilt"></p></div>
+                    <div class="case result"><div class="lbl">Resultado</div><p id="modalResult"></p></div>
+                </div>
                 <div id="modalAction"></div>
             </div>
         </div>
     </div>
 
+    <!-- CONTATO -->
     <section id="contato">
         <div class="contact-card">
-            <h2>Entre em Contato</h2>
-            <p>Converse conosco diretamente pelo WhatsApp para projetos e parcerias.</p>
-            
-            <a href="https://wa.me/5521975816116" class="btn-whatsapp" target="_blank">
-                <i class="fab fa-whatsapp"></i>
-                Enviar Mensagem pelo WhatsApp
-            </a>
-            
-            <p class="additional-info" style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 1rem; margin-bottom: 2rem;">
-                Clique para abrir o WhatsApp e iniciar a conversa. Responderemos o mais breve possível.
-            </p>
+            <h2>Tem um processo <span>manual</span> demais?</h2>
+            <p class="lead">Me conta qual é. Se dá para automatizar, eu mostro como. Estou aberto a projetos, oportunidades e boas conversas sobre IA e automação.</p>
 
-            <div class="additional-info">
-                <p>Horário de Atendimento: Seg-Sex, 9h-18h</p>
-                <p>E-mail: <a href="mailto:felipevfernandes@live.com">felipevfernandes@live.com</a></p>
-                <div style="margin-top: 1rem; display: flex; gap: 1.5rem; justify-content: center;">
-                    <a href="https://www.linkedin.com/in/felipe-fernandes-dev/" target="_blank"><i class="fab fa-linkedin fa-lg"></i></a>
-                    <a href="https://github.com/felipefer18" target="_blank"><i class="fab fa-github fa-lg"></i></a>
-                </div>
+            <div class="contact-actions">
+                <a href="https://wa.me/5521975816116" class="btn-whatsapp" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Chamar no WhatsApp</a>
+                <a href="https://www.linkedin.com/in/felipe-fernandes-dev/" class="btn-explorer" target="_blank" rel="noopener"><i class="fab fa-linkedin"></i> LinkedIn</a>
+            </div>
+
+            <p class="mail">ou por e-mail: <a href="mailto:felipevfernandes@live.com">felipevfernandes@live.com</a></p>
+
+            <div class="contact-links">
+                <a href="https://github.com/felipefer18" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/felipe-fernandes-dev/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                <a href="mailto:felipevfernandes@live.com" aria-label="E-mail"><i class="fas fa-envelope"></i></a>
             </div>
         </div>
     </section>
 
     <script>
+        // ── Navegação ───────────────────────────────────────────────
         function showSection(sectionId) {
             document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('#main-nav a').forEach(a => a.classList.remove('active'));
+            document.querySelectorAll('#main-nav a').forEach(a => a.classList.toggle('active', a.dataset.section === sectionId));
             document.getElementById(sectionId).classList.add('active');
-            const activeLink = Array.from(document.querySelectorAll('#main-nav a'))
-                                    .find(a => a.innerText.toLowerCase() === sectionId);
-            if(activeLink) activeLink.classList.add('active');
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
-        // ── Carrossel de Projetos ──────────────────────────────────────
+        // ── Terminal da home (digitação) ────────────────────────────
+        (function () {
+            const el = document.getElementById('terminal');
+            const scripts = [
+                [
+                    { t: '> tempos_movimentos.run("orcamento_evento.xlsx")', c: 't-prompt' },
+                    { t: '  lendo itens do orçamento...', c: 't-dim' },
+                    { t: '  classificando com Claude: Montagem / Chegada', c: 't-dim' },
+                    { t: '✓ cronograma gerado  ·  30 min → 5 min', c: 't-ok' }
+                ],
+                [
+                    { t: '> relatorio_pecas.gerar(pasta_drive)', c: 't-prompt' },
+                    { t: '  1 arquivo = 1 slide, no template da agência', c: 't-dim' },
+                    { t: '  organizando imagens sem corte...', c: 't-dim' },
+                    { t: '✓ apresentacao.pptx pronta', c: 't-ok' }
+                ],
+                [
+                    { t: '> mapa_de_dores.priorizar()', c: 't-prompt' },
+                    { t: '  consolidando respostas anônimas do time...', c: 't-dim' },
+                    { t: '  ordenando por tempo perdido', c: 't-dim' },
+                    { t: '✓ próxima automação: definida com dados', c: 't-ok' }
+                ]
+            ];
+            const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+            function render(lines, partial, cursor) {
+                let html = lines.map(l => '<div class="t-line ' + l.c + '">' + esc(l.t) + '</div>').join('');
+                if (partial) html += '<div class="t-line ' + partial.c + '">' + esc(partial.t) + (cursor ? '<span class="cursor"></span>' : '') + '</div>';
+                else if (cursor) html += '<div class="t-line"><span class="cursor"></span></div>';
+                el.innerHTML = html;
+            }
+            const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+            if (reduce) { render(scripts[0], null, false); return; }
+
+            (async function loop() {
+                let i = 0;
+                while (true) {
+                    const lines = scripts[i % scripts.length];
+                    const done = [];
+                    for (const line of lines) {
+                        const speed = line.c === 't-prompt' ? 35 : 14;
+                        for (let k = 1; k <= line.t.length; k++) {
+                            render(done, { t: line.t.slice(0, k), c: line.c }, true);
+                            await sleep(speed);
+                        }
+                        done.push(line);
+                        render(done, null, true);
+                        await sleep(line.c === 't-ok' ? 200 : 350);
+                    }
+                    await sleep(3200);
+                    i++;
+                }
+            })();
+        })();
+
+        // ── Fundo: rede de nós ──────────────────────────────────────
+        (function () {
+            const canvas = document.getElementById('bg-canvas');
+            const ctx = canvas.getContext('2d');
+            const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            let w, h, nodes = [], raf;
+
+            function resize() {
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                w = canvas.width = innerWidth * dpr;
+                h = canvas.height = innerHeight * dpr;
+                canvas.style.width = innerWidth + 'px';
+                canvas.style.height = innerHeight + 'px';
+                const count = Math.max(24, Math.min(70, Math.floor(innerWidth * innerHeight / 24000)));
+                nodes = Array.from({ length: count }, () => ({
+                    x: Math.random() * w, y: Math.random() * h,
+                    vx: (Math.random() - 0.5) * 0.25 * dpr, vy: (Math.random() - 0.5) * 0.25 * dpr,
+                    r: (Math.random() * 1.4 + 0.8) * dpr
+                }));
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, w, h);
+                const maxD = 170 * (w / innerWidth);
+                for (let i = 0; i < nodes.length; i++) {
+                    const a = nodes[i];
+                    if (!reduce) {
+                        a.x += a.vx; a.y += a.vy;
+                        if (a.x < 0 || a.x > w) a.vx *= -1;
+                        if (a.y < 0 || a.y > h) a.vy *= -1;
+                    }
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const b = nodes[j];
+                        const dx = a.x - b.x, dy = a.y - b.y, d = Math.hypot(dx, dy);
+                        if (d < maxD) {
+                            ctx.strokeStyle = 'rgba(34,211,238,' + (0.16 * (1 - d / maxD)) + ')';
+                            ctx.lineWidth = 1;
+                            ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+                        }
+                    }
+                    ctx.fillStyle = 'rgba(167,139,250,0.55)';
+                    ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2); ctx.fill();
+                }
+                if (!reduce) raf = requestAnimationFrame(draw);
+            }
+
+            resize(); draw();
+            addEventListener('resize', () => { cancelAnimationFrame(raf); resize(); draw(); });
+            document.addEventListener('visibilitychange', () => {
+                if (reduce) return;
+                if (document.hidden) cancelAnimationFrame(raf); else draw();
+            });
+        })();
+
+        // ── Carrossel de Projetos ───────────────────────────────────
         let carouselIndex = 0;
         const cards = document.querySelectorAll('.proj-card');
         const total = cards.length;
@@ -1010,23 +1144,11 @@
                 else if (offset === total - 1) card.dataset.state = 'left';
                 else card.dataset.state = 'hidden';
             });
-            // dots
-            document.querySelectorAll('.dot').forEach((d, i) => {
-                d.classList.toggle('active', i === carouselIndex);
-            });
+            document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === carouselIndex));
         }
+        function carouselNext() { carouselIndex = (carouselIndex + 1) % total; updateCarousel(); }
+        function carouselPrev() { carouselIndex = (carouselIndex - 1 + total) % total; updateCarousel(); }
 
-        function carouselNext() {
-            carouselIndex = (carouselIndex + 1) % total;
-            updateCarousel();
-        }
-
-        function carouselPrev() {
-            carouselIndex = (carouselIndex - 1 + total) % total;
-            updateCarousel();
-        }
-
-        // Build dots
         const dotsEl = document.getElementById('carouselDots');
         for (let i = 0; i < total; i++) {
             const d = document.createElement('div');
@@ -1034,49 +1156,55 @@
             d.onclick = () => { carouselIndex = i; updateCarousel(); };
             dotsEl.appendChild(d);
         }
-
         updateCarousel();
 
-        // Autoplay
-        let autoplayTimer = setInterval(carouselNext, 5000);
+        let autoplayTimer = setInterval(carouselNext, 6000);
 
-        // Swipe support
         let touchStartX = 0;
-        document.getElementById('carouselStage').addEventListener('touchstart', e => {
-            touchStartX = e.touches[0].clientX;
-        });
+        document.getElementById('carouselStage').addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
         document.getElementById('carouselStage').addEventListener('touchend', e => {
             const diff = touchStartX - e.changedTouches[0].clientX;
             if (Math.abs(diff) > 40) diff > 0 ? carouselNext() : carouselPrev();
         });
 
-        // ── Modal de Projeto ───────────────────────────────────────────
+        // ── Modal de Projeto ────────────────────────────────────────
         const modalOverlay = document.getElementById('projModalOverlay');
 
         function openProjectModal(cardEl) {
-            // Só abre se o card estiver centralizado (evita abrir os laterais)
             if (cardEl.dataset.state !== 'center') return;
+            const d = cardEl.dataset;
 
-            document.getElementById('modalImg').style.backgroundImage = `url('${cardEl.dataset.img}')`;
-            document.getElementById('modalTitle').textContent = cardEl.dataset.title;
-            document.getElementById('modalDesc').textContent = cardEl.dataset.desc;
-            document.getElementById('modalTags').textContent = cardEl.dataset.tags;
+            const img = document.getElementById('modalImg');
+            if (d.img) {
+                img.className = 'proj-modal-img';
+                img.innerHTML = '';
+                img.style.backgroundImage = "url('" + d.img + "')";
+            } else {
+                img.className = 'proj-modal-img no-shot';
+                img.style.backgroundImage = '';
+                img.innerHTML = '<i class="fas ' + (d.icon || 'fa-microchip') + '"></i>';
+                img.style.backgroundImage = 'radial-gradient(circle at 25% 20%, rgba(34,211,238,0.35), transparent 55%), radial-gradient(circle at 80% 85%, rgba(167,139,250,0.4), transparent 55%), linear-gradient(135deg, #0d1424, #151c33)';
+            }
+
+            document.getElementById('modalTitle').textContent = d.title;
+            document.getElementById('modalTags').textContent = d.tags;
+            document.getElementById('modalProblem').textContent = d.problem;
+            document.getElementById('modalBuilt').textContent = d.built;
+            document.getElementById('modalResult').textContent = d.result;
 
             const actionEl = document.getElementById('modalAction');
             actionEl.innerHTML = '';
-            if (cardEl.dataset.link) {
+            if (d.link) {
                 const a = document.createElement('a');
-                a.href = cardEl.dataset.link;
-                a.target = '_blank';
+                a.href = d.link; a.target = '_blank'; a.rel = 'noopener';
                 a.className = 'btn-explorer';
                 a.style.fontSize = '0.75rem';
-                a.style.padding = '0.7rem 1.4rem';
-                a.textContent = cardEl.dataset.linkLabel || 'VER PROJETO';
+                a.innerHTML = '<i class="fab fa-github"></i> ' + (d.linkLabel || 'VER PROJETO').toLowerCase();
                 actionEl.appendChild(a);
-            } else if (cardEl.dataset.badge) {
+            } else if (d.badge) {
                 const span = document.createElement('span');
                 span.className = 'proj-badge';
-                span.textContent = cardEl.dataset.badge;
+                span.textContent = d.badge + ' · código fechado';
                 actionEl.appendChild(span);
             }
 
@@ -1086,13 +1214,13 @@
 
         function closeProjectModal(e) {
             if (e && e.target !== modalOverlay) return;
+            if (!modalOverlay.classList.contains('active')) return;
             modalOverlay.classList.remove('active');
-            autoplayTimer = setInterval(carouselNext, 5000);
+            clearInterval(autoplayTimer);
+            autoplayTimer = setInterval(carouselNext, 6000);
         }
 
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') closeProjectModal();
-        });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeProjectModal(); });
     </script>
 </body>
 </html>
