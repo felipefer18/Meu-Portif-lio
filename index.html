@@ -391,20 +391,30 @@
         /* Projetos: grade de cards */
         .proj-grid {
             width: 100%; max-width: 1180px;
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.8rem 1.5rem;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.2rem 1.8rem;
         }
         .proj-card { position: relative; cursor: pointer; transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1); }
         .proj-card:hover { transform: translateY(-6px); }
         .proj-card .proj-img {
-            aspect-ratio: 4 / 5;
+            position: relative;
+            aspect-ratio: 16 / 9;
             border-radius: 18px;
+            overflow: hidden;
             background-size: cover;
-            background-position: 22% top;
+            background-position: center center;
             background-color: #121826;
-            border: 1px solid var(--line);
-            transition: border-color 0.3s, box-shadow 0.3s;
+            border: none;
+            box-shadow: 0 18px 40px -18px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.06);
+            transition: box-shadow 0.35s;
         }
-        .proj-card:hover .proj-img { border-color: rgba(var(--accent-rgb), 0.6); box-shadow: 0 0 40px rgba(var(--accent-rgb), 0.18); }
+        /* degradê no rodapé da imagem, para dar profundidade e deixar a etiqueta legível */
+        .proj-card .proj-img::after {
+            content: ""; position: absolute; inset: 0; pointer-events: none;
+            background:
+                linear-gradient(to top, rgba(7,9,15,0.55), transparent 42%),
+                linear-gradient(to bottom, rgba(255,255,255,0.07), transparent 22%);
+        }
+        .proj-card:hover .proj-img { box-shadow: 0 22px 50px -16px rgba(var(--accent-rgb), 0.35), 0 0 0 1px rgba(var(--accent-rgb), 0.5); }
         .proj-img.no-shot {
             display: flex; align-items: center; justify-content: center;
             font-size: 3.2rem; color: rgba(255,255,255,0.88);
@@ -435,8 +445,8 @@
             border-radius: 20px; padding: 0.35rem 0.7rem;
         }
         .proj-badge::before { content: "\f023"; font-family: "Font Awesome 6 Free"; font-weight: 900; font-size: 0.65rem; }
-        @media (max-width: 1100px) { .proj-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (max-width: 800px) { .proj-grid { grid-template-columns: repeat(2, 1fr); gap: 1.3rem 1rem; } .proj-body h3 { font-size: 0.95rem; } .proj-card .metric { font-size: 0.62rem; padding: 0.25rem 0.6rem; top: 0.55rem; left: 0.55rem; } }
+        @media (max-width: 900px) { .proj-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) { .proj-grid { grid-template-columns: 1fr; gap: 1.6rem; } .proj-body h3 { font-size: 0.95rem; } .proj-card .metric { font-size: 0.62rem; padding: 0.25rem 0.6rem; top: 0.55rem; left: 0.55rem; } }
 
         /* Modal */
         .proj-modal-overlay {
