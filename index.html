@@ -388,104 +388,55 @@
         .flip-back ul li:last-child { border-bottom: none; }
         .hint { font-size: 0.75rem; color: rgba(255,255,255,0.35); margin-bottom: 1.6rem; font-family: var(--mono); }
 
-        /* Carrossel */
-        .carousel-wrapper { width: 100%; max-width: 1000px; display: flex; flex-direction: column; align-items: center; gap: 2rem; }
-        .carousel-stage {
-            position: relative; width: 100%; height: 560px;
-            perspective: 1400px;
-            display: flex; align-items: center; justify-content: center;
+        /* Projetos: grade de cards */
+        .proj-grid {
+            width: 100%; max-width: 1180px;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.8rem 1.5rem;
         }
-        .proj-card {
-            position: absolute;
-            width: 350px;
-            background: var(--card-bg);
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid var(--line);
-            transition: all 0.7s cubic-bezier(0.4, 2, 0.3, 1);
-            will-change: transform, opacity;
-            cursor: pointer;
-        }
+        .proj-card { position: relative; cursor: pointer; transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1); }
+        .proj-card:hover { transform: translateY(-6px); }
         .proj-card .proj-img {
-            height: 170px;
+            aspect-ratio: 4 / 5;
+            border-radius: 18px;
             background-size: cover;
-            background-position: center top;
+            background-position: 22% top;
             background-color: #121826;
-            border-bottom: 1px solid var(--line);
+            border: 1px solid var(--line);
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
+        .proj-card:hover .proj-img { border-color: rgba(var(--accent-rgb), 0.6); box-shadow: 0 0 40px rgba(var(--accent-rgb), 0.18); }
         .proj-img.no-shot {
             display: flex; align-items: center; justify-content: center;
-            font-size: 3.2rem;
-            color: rgba(255,255,255,0.88);
+            font-size: 3.2rem; color: rgba(255,255,255,0.88);
             background-image:
                 radial-gradient(circle at 25% 20%, rgba(var(--accent-rgb), 0.35), transparent 55%),
                 radial-gradient(circle at 80% 85%, rgba(167,139,250,0.4), transparent 55%),
                 linear-gradient(135deg, #0d1424, #151c33);
         }
-        .proj-body { padding: 1.15rem 1.25rem 1.25rem; }
-        .proj-kicker { font-family: var(--mono); font-size: 0.68rem; color: var(--accent-2); letter-spacing: 0.5px; margin-bottom: 0.35rem; }
-        .proj-body h3 { color: #fff; margin-bottom: 0.45rem; font-size: 1.08rem; }
-        .proj-body p { font-size: 0.86rem; line-height: 1.5; color: var(--muted); margin-bottom: 0.7rem; }
-        .proj-tags { font-family: var(--mono); font-size: 0.68rem !important; color: rgba(255,255,255,0.5) !important; margin-bottom: 0.8rem !important; line-height: 1.6 !important; }
+        .proj-body { display: flex; flex-direction: column-reverse; padding: 0.85rem 0.2rem 0; }
+        .proj-body h3 { color: #fff; font-size: 1.05rem; font-weight: 600; margin: 0; }
+        .proj-kicker { font-family: var(--mono); font-size: 0.68rem; color: var(--accent-2); letter-spacing: 0.3px; margin-top: 0.25rem; }
+        .proj-body p, .proj-body .btn-explorer, .proj-expand-hint, .proj-card .proj-badge { display: none; }
+        .proj-tags { font-family: var(--mono); font-size: 0.68rem !important; color: rgba(255,255,255,0.5) !important; line-height: 1.6 !important; }
         .metric {
             display: inline-flex; align-items: center; gap: 0.5rem;
-            font-family: var(--mono);
-            font-size: 0.74rem;
-            color: #4ade80;
-            background: rgba(74,222,128,0.08);
-            border: 1px solid rgba(74,222,128,0.25);
-            border-radius: 20px;
-            padding: 0.35rem 0.8rem;
-            margin-right: 0.4rem;
+            font-family: var(--mono); font-size: 0.72rem; color: #4ade80;
+            background: rgba(7,9,15,0.8); backdrop-filter: blur(6px);
+            border: 1px solid rgba(74,222,128,0.3);
+            border-radius: 20px; padding: 0.35rem 0.8rem;
         }
+        .proj-card .metric { position: absolute; top: 0.8rem; left: 0.8rem; z-index: 2; }
         .proj-badge {
             display: inline-flex; align-items: center; gap: 0.4rem;
-            font-family: var(--mono);
-            font-size: 0.62rem;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+            font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.5px; text-transform: uppercase;
             color: rgba(var(--accent-rgb), 0.9);
             border: 1px solid rgba(var(--accent-rgb), 0.3);
             background: rgba(var(--accent-rgb), 0.06);
-            border-radius: 20px;
-            padding: 0.35rem 0.7rem;
+            border-radius: 20px; padding: 0.35rem 0.7rem;
         }
         .proj-badge::before { content: "\f023"; font-family: "Font Awesome 6 Free"; font-weight: 900; font-size: 0.65rem; }
-        .proj-expand-hint {
-            display: block; margin-top: 0.8rem;
-            font-family: var(--mono); font-size: 0.68rem;
-            color: rgba(255,255,255,0.35);
-            opacity: 0; transform: translateY(4px);
-            transition: var(--transition);
-        }
-        .proj-card[data-state="center"]:hover .proj-expand-hint { opacity: 1; transform: translateY(0); color: var(--accent); }
-
-        .proj-card[data-state="center"] {
-            transform: translateX(0) translateY(0) scale(1) rotateY(0deg);
-            opacity: 1; z-index: 3;
-            border-color: rgba(var(--accent-rgb), 0.6);
-            box-shadow: 0 0 45px rgba(var(--accent-rgb), 0.14);
-        }
-        .proj-card[data-state="left"] { transform: translateX(-290px) translateY(-40px) scale(0.82) rotateY(18deg); opacity: 0.5; z-index: 2; pointer-events: none; }
-        .proj-card[data-state="right"] { transform: translateX(290px) translateY(-40px) scale(0.82) rotateY(-18deg); opacity: 0.5; z-index: 2; pointer-events: none; }
-        .proj-card[data-state="hidden"] { opacity: 0; z-index: 1; pointer-events: none; transform: translateX(0) scale(0.7); }
-
-        .carousel-controls { display: flex; align-items: center; gap: 1.5rem; }
-        .carousel-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            width: 44px; height: 44px;
-            border-radius: 50%;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex; align-items: center; justify-content: center;
-        }
-        .carousel-btn:hover { background: var(--accent); color: #04121a; box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.4); }
-        .carousel-dots { display: flex; gap: 8px; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.22); transition: 0.3s; cursor: pointer; }
-        .dot.active { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+        @media (max-width: 1100px) { .proj-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 800px) { .proj-grid { grid-template-columns: repeat(2, 1fr); gap: 1.3rem 1rem; } .proj-body h3 { font-size: 0.95rem; } .proj-card .metric { font-size: 0.62rem; padding: 0.25rem 0.6rem; top: 0.55rem; left: 0.55rem; } }
 
         /* Modal */
         .proj-modal-overlay {
@@ -569,9 +520,6 @@
             #contato h2 { font-size: 2rem; }
             #contato .contact-card { padding: 2rem 1.2rem; }
             .about-card { padding: 1.5rem; gap: 1.5rem; }
-            .proj-card[data-state="left"], .proj-card[data-state="right"] { opacity: 0; }
-            .carousel-stage { height: 580px; overflow: hidden; }
-            .proj-card { width: 300px; }
             .proj-modal-img { height: 200px; }
             .proj-modal-body { padding: 1.4rem; }
             .terminal-body { font-size: 0.75rem; }
@@ -791,10 +739,9 @@
     <!-- PROJETOS -->
     <section id="projetos">
         <h2 class="sec-title">Projetos <span>em produção</span></h2>
-        <p class="sec-sub">Cada projeto parte de um problema real. Clique no card central para ver o problema, o que construí e o resultado.</p>
+        <p class="sec-sub">Cada projeto parte de um problema real. Clique em um card para ver o problema, o que construí e o resultado.</p>
 
-        <div class="carousel-wrapper">
-            <div class="carousel-stage" id="carouselStage">
+        <div class="proj-grid">
 
                 <div class="proj-card" data-index="0"
                     data-img="tempos-movimentos-preview.png"
@@ -1006,13 +953,6 @@
                 </div>
 
             </div>
-
-            <div class="carousel-controls">
-                <button class="carousel-btn" id="prevBtn" onclick="carouselPrev()" aria-label="Anterior">&#8592;</button>
-                <div class="carousel-dots" id="carouselDots"></div>
-                <button class="carousel-btn" id="nextBtn" onclick="carouselNext()" aria-label="Próximo">&#8594;</button>
-            </div>
-        </div>
     </section>
 
     <!-- Modal de Projeto -->
@@ -1174,47 +1114,11 @@
             });
         })();
 
-        // ── Carrossel de Projetos ───────────────────────────────────
-        let carouselIndex = 0;
-        const cards = document.querySelectorAll('.proj-card');
-        const total = cards.length;
-
-        function updateCarousel() {
-            cards.forEach((card, i) => {
-                const offset = (i - carouselIndex + total) % total;
-                if (offset === 0) card.dataset.state = 'center';
-                else if (offset === 1) card.dataset.state = 'right';
-                else if (offset === total - 1) card.dataset.state = 'left';
-                else card.dataset.state = 'hidden';
-            });
-            document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === carouselIndex));
-        }
-        function carouselNext() { carouselIndex = (carouselIndex + 1) % total; updateCarousel(); }
-        function carouselPrev() { carouselIndex = (carouselIndex - 1 + total) % total; updateCarousel(); }
-
-        const dotsEl = document.getElementById('carouselDots');
-        for (let i = 0; i < total; i++) {
-            const d = document.createElement('div');
-            d.className = 'dot' + (i === 0 ? ' active' : '');
-            d.onclick = () => { carouselIndex = i; updateCarousel(); };
-            dotsEl.appendChild(d);
-        }
-        updateCarousel();
-
-        let autoplayTimer = setInterval(carouselNext, 6000);
-
-        let touchStartX = 0;
-        document.getElementById('carouselStage').addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
-        document.getElementById('carouselStage').addEventListener('touchend', e => {
-            const diff = touchStartX - e.changedTouches[0].clientX;
-            if (Math.abs(diff) > 40) diff > 0 ? carouselNext() : carouselPrev();
-        });
 
         // ── Modal de Projeto ────────────────────────────────────────
         const modalOverlay = document.getElementById('projModalOverlay');
 
         function openProjectModal(cardEl) {
-            if (cardEl.dataset.state !== 'center') return;
             const d = cardEl.dataset;
 
             const img = document.getElementById('modalImg');
@@ -1252,15 +1156,12 @@
             }
 
             modalOverlay.classList.add('active');
-            clearInterval(autoplayTimer);
         }
 
         function closeProjectModal(e) {
             if (e && e.target !== modalOverlay) return;
             if (!modalOverlay.classList.contains('active')) return;
             modalOverlay.classList.remove('active');
-            clearInterval(autoplayTimer);
-            autoplayTimer = setInterval(carouselNext, 6000);
         }
 
         document.addEventListener('keydown', e => { if (e.key === 'Escape') closeProjectModal(); });
